@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSSPP 2025 Swim Meet Schedule</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #003366;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: #0066cc;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+            color: white;
+            background-color: #004080;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        h4 {
+            font-size: 1.3rem;
+            margin: 20px 0 10px 0;
+            color: white;
+            background-color: #0066cc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .event-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .event-table th, 
+        .event-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .event-table th {
+            background-color: #003366;
+            color: white;
+        }
+        
+        .event-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .event-table tr:hover {
+            background-color: #dff0ff;
+        }
+        
+        .day-header {
+            background-color: #004080;
+            color: white;
+            padding: 15px;
+            margin: 30px 0 15px 0;
+            border-radius: 5px;
+        }
+        
+        .session-header {
+            background-color: #0066cc;
+            color: white;
+            padding: 10px;
+            margin: 20px 0 10px 0;
+            border-radius: 5px;
+        }
+        
+        .athlete-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .athlete-list li {
+            padding: 4px 0;
+        }
+        
+        .relay-list {
+            list-style-type: decimal;
+            padding-left: 20px;
+        }
+        
+        .relay-list li {
+            padding: 4px 0;
+        }
+        
+        .filter-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .filter-buttons {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-button {
+            padding: 8px 15px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .filter-button:hover {
+            background-color: #004080;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .event-table {
+                font-size: 0.9rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+            }
+            
+            h4 {
+                font-size: 1.1rem;
+            }
+            
+            .filter-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .event-table {
+                font-size: 0.8rem;
+            }
+            
+            .event-table th, 
+            .event-table td {
+                padding: 8px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            h3 {
+                font-size: 1.1rem;
+            }
+            
+            h4 {
+                font-size: 1rem;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Keong Hoe Swim Team 2025</h1>
+        <h2>MSSPP 2025</h2>
+        <p>April 7-9, 2025</p>
+    </div>
+    
+    <div class="filter-section">
+        <h3>Filter Events</h3>
+        <input type="text" id="swimmer-filter" class="filter-input" placeholder="Enter swimmer name...">
+        <button onclick="filterBySwimmer()" class="filter-button">Filter</button>
+        <button onclick="resetFilter()" class="filter-button">Show All</button>
+        
+        <div class="filter-buttons">
+            <button onclick="filterByDay(1)" class="filter-button">Day 1</button>
+            <button onclick="filterByDay(2)" class="filter-button">Day 2</button>
+            <button onclick="filterByDay(3)" class="filter-button">Day 3</button>
+        </div>
+    </div>
+    
+    <div class="day-header day-1">
+        <h3>Day 1 - Monday, April 7, 2025</h3>
+    </div>
+    
+    <div class="session-header day-1">
+        <h4>Morning Session - Starting at 8:00 AM</h4>
+    </div>
+    
+    <table class="event-table day-1">
+        <thead>
+            <tr>
+                <th>Event #</th>
+                <th>Event Name</th>
+                <th>Athletes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="event-row" data-athletes="Ling Shen Yang,Ayden Koay,Yeoh Li Ze">
+                <td>102</td>
+                <td>Boys 12U 100 Freestyle</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Ling Shen Yang (5U)</li>
+                        <li>Ayden Koay (4K)</li>
+                        <li>Yeoh Li Ze (4H)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Shavietaa,Lim Ginny Sze Han,Ainatul Dhamia">
+                <td>103</td>
+                <td>Girls 12U 100 Freestyle</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Shavietaa (5M)</li>
+                        <li>Lim Ginny Sze Han (5M)</li>
+                        <li>Ainatul Dhamia (5K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Seoh Yeong Terng,Ling Shen Yang,Ayden Koay">
+                <td>108</td>
+                <td>Boys 12U 50 Fly</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Ling Shen Yang (5U)</li>
+                        <li>Ayden Koay (4K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Law Yin Er,Shavietaa,Ammara">
+                <td>109</td>
+                <td>Girls 12U 50 Fly</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Law Yin Er (6B)</li>
+                        <li>Shavietaa (5M)</li>
+                        <li>Ammara (3M)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Ayden Koay,Seoh Yeong Terng,Ainatul Dhamia,Law Yin Er">
+                <td>114</td>
+                <td>Mixed 12U 200 Freestyle Relay</td>
+                <td>
+                    <ol class="relay-list">
+                        <li>Ayden Koay (4K)</li>
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Ainatul Dhamia (5K)</li>
+                        <li>Law Yin Er (6B)</li>
+                    </ol>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="session-header day-1">
+        <h4>Afternoon Session - Starting at 2:00 PM</h4>
+    </div>
+    
+    <table class="event-table day-1">
+        <thead>
+            <tr>
+                <th>Event #</th>
+                <th>Event Name</th>
+                <th>Athletes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="event-row" data-athletes="Ayden Koay,Lee Jia Kai,Yeoh Li Ze">
+                <td>118</td>
+                <td>Boys 12U 100 Breast</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Ayden Koay (4K)</li>
+                        <li>Lee Jia Kai (4K)</li>
+                        <li>Yeoh Li Ze (4H)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Tan Yun Xin,Ainatul Dhamia,Ammara">
+                <td>119</td>
+                <td>Girls 12U 100 Breast</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Tan Yun Xin (6K)</li>
+                        <li>Ainatul Dhamia (5K)</li>
+                        <li>Ammara (3M)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Ayden Koay,Ainatul Dhamia,Law Yin Er,Seoh Yeong Terng">
+                <td>128</td>
+                <td>Mixed 12U Medley Relay</td>
+                <td>
+                    <ol class="relay-list">
+                        <li>Ayden Koay (4K)</li>
+                        <li>Ainatul Dhamia (5K)</li>
+                        <li>Law Yin Er (6B)</li>
+                        <li>Seoh Yeong Terng (6B)</li>
+                    </ol>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="day-header day-2">
+        <h3>Day 2 - Tuesday, April 8, 2025</h3>
+    </div>
+    
+    <div class="session-header day-2">
+        <h4>Morning Session - Starting at 8:00 AM</h4>
+    </div>
+    
+    <table class="event-table day-2">
+        <thead>
+            <tr>
+                <th>Event #</th>
+                <th>Event Name</th>
+                <th>Athletes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="event-row" data-athletes="Seoh Yeong Terng,Ling Shen Yang,Ayden Koay">
+                <td>202</td>
+                <td>Boys 12U 200 IM</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Ling Shen Yang (5U)</li>
+                        <li>Ayden Koay (4K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Law Yin Er,Ainatul Dhamia">
+                <td>203</td>
+                <td>Girls 12U 200 IM</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Law Yin Er (6B)</li>
+                        <li>Ainatul Dhamia (5K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Ling Shen Yang,Lee Jia Kai,Yeoh Li Ze">
+                <td>208</td>
+                <td>Boys 12U 50 Breast</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Ling Shen Yang (5U)</li>
+                        <li>Lee Jia Kai (4K)</li>
+                        <li>Yeoh Li Ze (4H)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Shavietaa,Ainatul Dhamia,Bong Rui You">
+                <td>209</td>
+                <td>Girls 12U 50 Breast</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Shavietaa (5M)</li>
+                        <li>Ainatul Dhamia (5K)</li>
+                        <li>Bong Rui You (4B)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Ayden Koay">
+                <td>214</td>
+                <td>Boys 12U 200 Freestyle</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Ayden Koay (4K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Law Yin Er,Shavietaa">
+                <td>215</td>
+                <td>Girls 12U 200 Freestyle</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Law Yin Er (6B)</li>
+                        <li>Shavietaa (5M)</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="session-header day-2">
+        <h4>Afternoon Session - Starting at 2:00 PM</h4>
+    </div>
+    
+    <table class="event-table day-2">
+        <thead>
+            <tr>
+                <th>Event #</th>
+                <th>Event Name</th>
+                <th>Athletes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="event-row" data-athletes="Seoh Yeong Terng,Ling Shen Yang">
+                <td>222</td>
+                <td>Boys 12U 100 Butterfly</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Ling Shen Yang (5U)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Law Yin Er,Ainatul Dhamia">
+                <td>223</td>
+                <td>Girls 12U 100 Butterfly</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Law Yin Er (6B)</li>
+                        <li>Ainatul Dhamia (5K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Seoh Yeong Terng,Lee Jia Kai">
+                <td>228</td>
+                <td>Boys 12U 50 Backstroke</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Lee Jia Kai (4K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Lim Ginny Sze Han,Tan Yun Xin,Law Yin Er">
+                <td>229</td>
+                <td>Girls 12U 50 Backstroke</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Lim Ginny Sze Han (5M)</li>
+                        <li>Tan Yun Xin (6K)</li>
+                        <li>Law Yin Er (6B)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Seoh Yeong Terng,Yeoh Li Ze,Lee Jia Kai,Ayden Koay">
+                <td>234</td>
+                <td>Boys 12U 200 Freestyle Relay</td>
+                <td>
+                    <ol class="relay-list">
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Yeoh Li Ze (4H)</li>
+                        <li>Lee Jia Kai (4K)</li>
+                        <li>Ayden Koay (4K)</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Ainatul Dhamia,Shavietaa,Ammara,Law Yin Er">
+                <td>235</td>
+                <td>Girls 12U 200 Freestyle Relay</td>
+                <td>
+                    <ol class="relay-list">
+                        <li>Ainatul Dhamia (5K)</li>
+                        <li>Shavietaa (5M)</li>
+                        <li>Ammara (3M)</li>
+                        <li>Law Yin Er (6B)</li>
+                    </ol>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="day-header day-3">
+        <h3>Day 3 - Wednesday, April 9, 2025</h3>
+    </div>
+    
+    <div class="session-header day-3">
+        <h4>Morning Session - Starting at 8:00 AM</h4>
+    </div>
+    
+    <table class="event-table day-3">
+        <thead>
+            <tr>
+                <th>Event #</th>
+                <th>Event Name</th>
+                <th>Athletes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="event-row" data-athletes="Ayden Koay,Seoh Yeong Terng,Lee Jia Kai">
+                <td>306</td>
+                <td>Boys 12U 50 Freestyle</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Ayden Koay (4K)</li>
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Lee Jia Kai (4K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Shavietaa,Ainatul Dhamia,Bong Rui You">
+                <td>307</td>
+                <td>Girls 12U 50 Freestyle</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Shavietaa (5M)</li>
+                        <li>Ainatul Dhamia (5K)</li>
+                        <li>Bong Rui You (4B)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Seoh Yeong Terng,Lee Jia Kai">
+                <td>312</td>
+                <td>Boys 12U 100 Backstroke</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Lee Jia Kai (4K)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Law Yin Er,Ammara">
+                <td>313</td>
+                <td>Girls 12U 100 Backstroke</td>
+                <td>
+                    <ul class="athlete-list">
+                        <li>Law Yin Er (6B)</li>
+                        <li>Ammara (3M)</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="session-header day-3">
+        <h4>Afternoon Session - Starting at 2:00 PM</h4>
+    </div>
+    
+    <table class="event-table day-3">
+        <thead>
+            <tr>
+                <th>Event #</th>
+                <th>Event Name</th>
+                <th>Athletes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="event-row" data-athletes="Seoh Yeong Terng,Ling Shen Yang,Ayden Koay,Lee Jia Kai">
+                <td>324</td>
+                <td>Boys 12U 200 Medley Relay</td>
+                <td>
+                    <ol class="relay-list">
+                        <li>Seoh Yeong Terng (6B)</li>
+                        <li>Ling Shen Yang (5U)</li>
+                        <li>Ayden Koay (4K)</li>
+                        <li>Lee Jia Kai (4K)</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr class="event-row" data-athletes="Ainatul Dhamia,Ammara,Law Yin Er,Shavietaa">
+                <td>325</td>
+                <td>Girls 12U 200 Medley Relay</td>
+                <td>
+                    <ol class="relay-list">
+                        <li>Ainatul Dhamia (5K)</li>
+                        <li>Ammara (3M)</li>
+                        <li>Law Yin Er (6B)</li>
+                        <li>Shavietaa (5M)</li>
+                    </ol>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <script>
+        function filterBySwimmer() {
+            const searchTerm = document.getElementById('swimmer-filter').value.trim().toLowerCase();
+            if (searchTerm === '') {
+                resetFilter();
+                return;
+            }
+            
+            const rows = document.querySelectorAll('.event-row');
+            
+            rows.forEach(row => {
+                const athletes = row.getAttribute('data-athletes').toLowerCase();
+                if (athletes.includes(searchTerm)) {
+                    row.classList.remove('hidden');
+                    
+                    // Show the parent table and headers
+                    let currentElement = row.parentElement;
+                    while (currentElement) {
+                        if (currentElement.tagName === 'TABLE') {
+                            currentElement.classList.remove('hidden');
+                            const dayClass = currentElement.className.split(' ')[1];
+                            document.querySelectorAll('.' + dayClass).forEach(el => {
+                                el.classList.remove('hidden');
+                            });
+                            break;
+                        }
+                        currentElement = currentElement.parentElement;
+                    }
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+            
+            // Hide empty tables
+            const tables = document.querySelectorAll('.event-table');
+            tables.forEach(table => {
+                const visibleRows = table.querySelectorAll('.event-row:not(.hidden)');
+                if (visibleRows.length === 0) {
+                    table.classList.add('hidden');
+                    const dayClass = table.className.split(' ')[1];
+                    const tableIndex = Array.from(document.querySelectorAll('.' + dayClass + '.event-table')).indexOf(table);
+                    const sessionHeaders = document.querySelectorAll('.' + dayClass + '.session-header');
+                    if (sessionHeaders[tableIndex]) {
+                        sessionHeaders[tableIndex].classList.add('hidden');
+                    }
+                }
+            });
+            
+            // Hide empty days
+            const dayClasses = ['day-1', 'day-2', 'day-3'];
+            dayClasses.forEach(dayClass => {
+                const visibleTables = document.querySelectorAll('.' + dayClass + '.event-table:not(.hidden)');
+                if (visibleTables.length === 0) {
+                    document.querySelectorAll('.' + dayClass + '.day-header').forEach(header => {
+                        header.classList.add('hidden');
+                    });
+                }
+            });
+        }
+        
+        function resetFilter() {
+            document.getElementById('swimmer-filter').value = '';
+            const elements = document.querySelectorAll('.event-row, .event-table, .session-header, .day-header');
+            elements.forEach(el => {
+                el.classList.remove('hidden');
+            });
+        }
+        
+        function filterByDay(day) {
+            resetFilter();
+            const dayClass = 'day-' + day;
+            const allDays = document.querySelectorAll('.day-1, .day-2, .day-3');
+            
+            allDays.forEach(element => {
+                if (!element.classList.contains(dayClass)) {
+                    element.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
