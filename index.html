@@ -555,20 +555,87 @@
         .sort-desc::after {
             content: '↓';
         }
+
+        /* New styles for clock and admin button */
+        .clock {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 10px 0;
+            color: #003366;
+            font-weight: bold;
+        }
+
+        .admin-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .modal {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            min-width: 300px;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal button:not(.cancel) {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        .modal button.cancel {
+            background-color: #f2f2f2;
+            color: #333;
+        }
     </style>
 </head>
 <body>
+    <button id="adminButton" class="admin-button" onclick="showLoginModal()">Admin</button>
+
     <div class="header">
         <h1 id="mainTitle" class="editable-header">Keong Hoe Swim Team 2025</h1>
         <h2 id="subTitle" class="editable-header">MSSPP 2025</h2>
         <p id="eventDate" class="editable-header">April 7-9, 2025</p>
         <p id="eventLocation" class="editable-header">Location: TBD</p>
-    </div>
-
-    <div id="adminLogin" class="admin-login">
-        <h3>Administrator Login</h3>
-        <input type="password" id="adminPassword" placeholder="Enter admin password">
-        <button onclick="login()">Login</button>
+        <div id="clock" class="clock">00:00:00</div>
     </div>
 
     <div id="adminControls" class="admin-controls">
@@ -577,7 +644,6 @@
         <button onclick="document.getElementById('teamFile').click()">Upload Team Data</button>
         <button class="danger" onclick="clearAllData()">Clear All Data</button>
         <button onclick="changePassword()">Change Password</button>
-        <button onclick="showGitHubConfig()">Configure GitHub</button>
     </div>
 
     <div id="uploadSection" class="upload-section" style="display: none;">
@@ -642,11 +708,6 @@
     </div>
 
     <script>
-        // GitHub Configuration
-        let GITHUB_TOKEN = ''; // Will be set via UI
-        let GITHUB_REPO = ''; // Will be set via UI
-        let GITHUB_OWNER = ''; // Will be set via UI
-        
         // Configuration
         const DEFAULT_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
         let passwordHash = DEFAULT_HASH;
@@ -663,6 +724,19 @@
         let currentSortColumn = 'points';
         let sortDirection = 'desc';
 
+        // Clock update function
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Start clock
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial update
+
         // Helper function to hash passwords using SHA256
         async function hashPassword(password) {
             const encoder = new TextEncoder();
@@ -673,90 +747,27 @@
             return hashHex;
         }
 
-        // GitHub API Functions
-        async function getGitHubFile(path) {
-            try {
-                const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                const data = await response.json();
-                if (data.content) {
-                    return JSON.parse(atob(data.content));
-                }
-                return null;
-            } catch (error) {
-                console.error('Error reading from GitHub:', error);
-                return null;
-            }
+        // Login Modal Functions
+        function showLoginModal() {
+            const modalHtml = `
+                <div class="modal-overlay" id="loginModal">
+                    <div class="modal">
+                        <h3>Administrator Login</h3>
+                        <input type="password" id="adminPassword" placeholder="Enter admin password">
+                        <button onclick="login()">Login</button>
+                        <button class="cancel" onclick="closeLoginModal()">Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
         }
 
-        async function updateGitHubFile(path, content) {
-            if (!isAdmin || !GITHUB_TOKEN) return;
-
-            try {
-                // First get the current file (if it exists) to get its SHA
-                let currentFile;
-                try {
-                    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
-                        headers: {
-                            'Authorization': `token ${GITHUB_TOKEN}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-                    currentFile = await response.json();
-                } catch (e) {
-                    currentFile = null;
-                }
-
-                const body = {
-                    message: `Update ${path}`,
-                    content: btoa(JSON.stringify(content)),
-                    ...(currentFile && currentFile.sha ? { sha: currentFile.sha } : {})
-                };
-
-                const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`GitHub API error: ${response.statusText}`);
-                }
-            } catch (error) {
-                console.error('Error updating GitHub file:', error);
-                alert('Failed to save changes. Please check your GitHub configuration.');
-            }
+        function closeLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) modal.remove();
         }
 
-        // Modified DOMContentLoaded event
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Load GitHub config
-            const githubConfig = localStorage.getItem('githubConfig');
-            if (githubConfig) {
-                const config = JSON.parse(githubConfig);
-                GITHUB_OWNER = config.owner;
-                GITHUB_REPO = config.repo;
-            }
-            
-            await loadConfigFromGitHub();
-            await loadTimesFromGitHub();
-            
-            isAdmin = localStorage.getItem('isAdmin') === 'true';
-            updateUIForRole();
-            loadEventData();
-            setupCSVUpload();
-            setupHeaderEditing();
-            setupTeamUpload();
-        });
-
+        // Modified login function
         async function login() {
             const password = document.getElementById('adminPassword').value;
             if (!password) {
@@ -765,15 +776,67 @@
             }
 
             const hashedPassword = await hashPassword(password);
-            if (hashedPassword === passwordHash) {
+            const savedHash = await loadAdminConfig();
+            
+            if (hashedPassword === (savedHash || DEFAULT_HASH)) {
                 isAdmin = true;
                 localStorage.setItem('isAdmin', 'true');
+                passwordHash = savedHash || DEFAULT_HASH;
                 updateUIForRole();
+                closeLoginModal();
                 document.getElementById('adminPassword').value = '';
             } else {
                 alert('Incorrect password');
             }
         }
+
+        // File Storage Functions
+        async function saveAdminConfig() {
+            const config = {
+                passwordHash
+            };
+            localStorage.setItem('adminConfig', JSON.stringify(config));
+        }
+
+        async function loadAdminConfig() {
+            const config = localStorage.getItem('adminConfig');
+            if (config) {
+                const parsed = JSON.parse(config);
+                return parsed.passwordHash;
+            }
+            return null;
+        }
+
+        async function saveEventData(data) {
+            localStorage.setItem('eventData', JSON.stringify(data));
+        }
+
+        async function loadEventData() {
+            const data = localStorage.getItem('eventData');
+            return data ? JSON.parse(data) : null;
+        }
+
+        // Modified DOMContentLoaded event
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check admin status first to prevent flash
+            const savedAdminStatus = localStorage.getItem('isAdmin');
+            if (savedAdminStatus === 'true') {
+                isAdmin = true;
+                const savedHash = await loadAdminConfig();
+                if (savedHash) passwordHash = savedHash;
+            }
+            
+            updateUIForRole();
+            const savedEventData = await loadEventData();
+            if (savedEventData) {
+                processCSVData(savedEventData);
+                document.getElementById('eventContainer').style.display = 'block';
+            }
+            
+            setupCSVUpload();
+            setupHeaderEditing();
+            setupTeamUpload();
+        });
 
         async function changePassword() {
             const currentPassword = prompt('Enter current password:');
@@ -792,7 +855,7 @@
 
                 const newHash = await hashPassword(newPassword);
                 passwordHash = newHash;
-                await saveConfigToGitHub();
+                await saveAdminConfig();
                 alert('Password changed successfully');
             } else {
                 alert('Incorrect current password');
@@ -806,19 +869,20 @@
         }
 
         function updateUIForRole() {
-            const adminLogin = document.getElementById('adminLogin');
+            const adminButton = document.getElementById('adminButton');
             const adminControls = document.getElementById('adminControls');
             const uploadSection = document.getElementById('uploadSection');
             const timeInputs = document.querySelectorAll('.time-input');
 
             if (isAdmin) {
-                adminLogin.style.display = 'none';
+                adminButton.textContent = 'Logout';
+                adminButton.onclick = logout;
                 adminControls.style.display = 'block';
-                adminControls.innerHTML += '<button onclick="showGitHubConfig()">Configure GitHub</button>';
                 uploadSection.style.display = 'block';
                 timeInputs.forEach(input => input.removeAttribute('readonly'));
             } else {
-                adminLogin.style.display = 'block';
+                adminButton.textContent = 'Admin';
+                adminButton.onclick = showLoginModal;
                 adminControls.style.display = 'none';
                 uploadSection.style.display = 'none';
                 timeInputs.forEach(input => input.setAttribute('readonly', true));
@@ -1277,7 +1341,7 @@
         }
 
         // Update the displayResults function to save times
-        async function displayResults() {
+        function displayResults() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '<h2>Swim Meet Results</h2>';
             const eventRows = document.querySelectorAll('.event-row');
@@ -1342,19 +1406,11 @@
                 resultsDiv.innerHTML += "<p>No results have been entered yet.</p>";
             }
 
-            // Save times to localStorage after displaying results
-            await saveTimesToGitHub();
+            // Save times to localStorage
+            saveTimesToLocalStorage();
             
             // Update seed times in the UI
             updateSeedTimes();
-        }
-
-        function loadEventData() {
-            const savedEventData = localStorage.getItem('eventData');
-            if (savedEventData) {
-                processCSVData(savedEventData);
-                document.getElementById('eventContainer').style.display = 'block';
-            }
         }
 
         function setupHeaderEditing() {
@@ -1502,133 +1558,6 @@
                     }
                 }
             });
-        }
-
-        // Modified storage functions to use GitHub
-        async function saveTimesToGitHub() {
-            const timeInputs = document.querySelectorAll('.time-input');
-            const times = {};
-            
-            timeInputs.forEach(input => {
-                const athlete = input.getAttribute('data-athlete');
-                const value = input.value.trim();
-                if (value) {
-                    times[athlete] = {
-                        time: value,
-                        eventNumber: input.closest('.event-row').querySelector('td:nth-child(1)').textContent
-                    };
-                }
-            });
-            
-            await updateGitHubFile('data/times.json', times);
-        }
-
-        async function loadTimesFromGitHub() {
-            const times = await getGitHubFile('data/times.json');
-            if (!times) return;
-            
-            const timeInputs = document.querySelectorAll('.time-input');
-            timeInputs.forEach(input => {
-                const athlete = input.getAttribute('data-athlete');
-                if (times[athlete]) {
-                    const currentEventNumber = input.closest('.event-row').querySelector('td:nth-child(1)').textContent;
-                    if (times[athlete].eventNumber === currentEventNumber) {
-                        input.value = times[athlete].time;
-                        const athleteId = athlete.replace(/\s+/g, '-');
-                        const seedElement = document.getElementById(`seed-${athleteId}`);
-                        if (seedElement) {
-                            seedElement.textContent = `Seed: ${times[athlete].time}`;
-                        }
-                        input.setAttribute('data-seed', times[athlete].time);
-                    }
-                }
-            });
-        }
-
-        async function saveConfigToGitHub() {
-            const config = {
-                passwordHash,
-                headerData,
-                teamData
-            };
-            await updateGitHubFile('data/config.json', config);
-        }
-
-        async function loadConfigFromGitHub() {
-            const config = await getGitHubFile('data/config.json');
-            if (config) {
-                passwordHash = config.passwordHash || DEFAULT_HASH;
-                headerData = config.headerData || {};
-                teamData = config.teamData || {};
-                
-                // Update UI with loaded data
-                Object.entries(headerData).forEach(([id, value]) => {
-                    const element = document.getElementById(id);
-                    if (element) element.textContent = value;
-                });
-                
-                updateTeamStandings();
-            }
-        }
-
-        // Add GitHub configuration modal
-        function showGitHubConfig() {
-            if (!isAdmin) return;
-            
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 20px;
-                border-radius: 5px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.5);
-                z-index: 1000;
-            `;
-            
-            modal.innerHTML = `
-                <h3>GitHub Configuration</h3>
-                <p>Enter your GitHub repository details:</p>
-                <div style="margin: 10px 0;">
-                    <label>Personal Access Token:</label><br>
-                    <input type="password" id="githubToken" value="${GITHUB_TOKEN}">
-                </div>
-                <div style="margin: 10px 0;">
-                    <label>Repository Owner:</label><br>
-                    <input type="text" id="githubOwner" value="${GITHUB_OWNER}">
-                </div>
-                <div style="margin: 10px 0;">
-                    <label>Repository Name:</label><br>
-                    <input type="text" id="githubRepo" value="${GITHUB_REPO}">
-                </div>
-                <button onclick="saveGitHubConfig()">Save</button>
-                <button onclick="this.parentElement.remove()">Cancel</button>
-            `;
-            
-            document.body.appendChild(modal);
-        }
-
-        async function saveGitHubConfig() {
-            GITHUB_TOKEN = document.getElementById('githubToken').value;
-            GITHUB_OWNER = document.getElementById('githubOwner').value;
-            GITHUB_REPO = document.getElementById('githubRepo').value;
-            
-            // Save the non-sensitive config to localStorage
-            localStorage.setItem('githubConfig', JSON.stringify({
-                owner: GITHUB_OWNER,
-                repo: GITHUB_REPO
-            }));
-            
-            // Test the connection
-            try {
-                await getGitHubFile('data/config.json');
-                alert('GitHub configuration saved successfully!');
-                document.querySelector('div[style*="position: fixed"]').remove();
-            } catch (error) {
-                alert('Failed to connect to GitHub. Please check your configuration.');
-            }
         }
     </script>
 </body>
