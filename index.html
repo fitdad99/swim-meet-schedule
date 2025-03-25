@@ -577,6 +577,7 @@
         <button onclick="document.getElementById('teamFile').click()">Upload Team Data</button>
         <button class="danger" onclick="clearAllData()">Clear All Data</button>
         <button onclick="changePassword()">Change Password</button>
+        <button onclick="showGitHubConfig()">Configure GitHub</button>
     </div>
 
     <div id="uploadSection" class="upload-section" style="display: none;">
@@ -641,10 +642,14 @@
     </div>
 
     <script>
+        // GitHub Configuration
+        let GITHUB_TOKEN = ''; // Will be set via UI
+        let GITHUB_REPO = ''; // Will be set via UI
+        let GITHUB_OWNER = ''; // Will be set via UI
+        
         // Configuration
-        // Default password is 'admin123' hashed with SHA256
         const DEFAULT_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
-        let passwordHash = localStorage.getItem('adminPasswordHash') || DEFAULT_HASH;
+        let passwordHash = DEFAULT_HASH;
         let isAdmin = false;
 
         let headerData = {
@@ -668,14 +673,85 @@
             return hashHex;
         }
 
+        // GitHub API Functions
+        async function getGitHubFile(path) {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                const data = await response.json();
+                if (data.content) {
+                    return JSON.parse(atob(data.content));
+                }
+                return null;
+            } catch (error) {
+                console.error('Error reading from GitHub:', error);
+                return null;
+            }
+        }
+
+        async function updateGitHubFile(path, content) {
+            if (!isAdmin || !GITHUB_TOKEN) return;
+
+            try {
+                // First get the current file (if it exists) to get its SHA
+                let currentFile;
+                try {
+                    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+                        headers: {
+                            'Authorization': `token ${GITHUB_TOKEN}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    currentFile = await response.json();
+                } catch (e) {
+                    currentFile = null;
+                }
+
+                const body = {
+                    message: `Update ${path}`,
+                    content: btoa(JSON.stringify(content)),
+                    ...(currentFile && currentFile.sha ? { sha: currentFile.sha } : {})
+                };
+
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error updating GitHub file:', error);
+                alert('Failed to save changes. Please check your GitHub configuration.');
+            }
+        }
+
         // Modified DOMContentLoaded event
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load GitHub config
+            const githubConfig = localStorage.getItem('githubConfig');
+            if (githubConfig) {
+                const config = JSON.parse(githubConfig);
+                GITHUB_OWNER = config.owner;
+                GITHUB_REPO = config.repo;
+            }
+            
+            await loadConfigFromGitHub();
+            await loadTimesFromGitHub();
+            
             isAdmin = localStorage.getItem('isAdmin') === 'true';
-            loadHeaderData();
-            loadTeamData();
             updateUIForRole();
             loadEventData();
-            loadSavedTimes();
             setupCSVUpload();
             setupHeaderEditing();
             setupTeamUpload();
@@ -716,7 +792,7 @@
 
                 const newHash = await hashPassword(newPassword);
                 passwordHash = newHash;
-                localStorage.setItem('adminPasswordHash', newHash);
+                await saveConfigToGitHub();
                 alert('Password changed successfully');
             } else {
                 alert('Incorrect current password');
@@ -738,6 +814,7 @@
             if (isAdmin) {
                 adminLogin.style.display = 'none';
                 adminControls.style.display = 'block';
+                adminControls.innerHTML += '<button onclick="showGitHubConfig()">Configure GitHub</button>';
                 uploadSection.style.display = 'block';
                 timeInputs.forEach(input => input.removeAttribute('readonly'));
             } else {
@@ -1200,7 +1277,7 @@
         }
 
         // Update the displayResults function to save times
-        function displayResults() {
+        async function displayResults() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '<h2>Swim Meet Results</h2>';
             const eventRows = document.querySelectorAll('.event-row');
@@ -1266,7 +1343,7 @@
             }
 
             // Save times to localStorage after displaying results
-            saveTimesToLocalStorage();
+            await saveTimesToGitHub();
             
             // Update seed times in the UI
             updateSeedTimes();
@@ -1425,6 +1502,133 @@
                     }
                 }
             });
+        }
+
+        // Modified storage functions to use GitHub
+        async function saveTimesToGitHub() {
+            const timeInputs = document.querySelectorAll('.time-input');
+            const times = {};
+            
+            timeInputs.forEach(input => {
+                const athlete = input.getAttribute('data-athlete');
+                const value = input.value.trim();
+                if (value) {
+                    times[athlete] = {
+                        time: value,
+                        eventNumber: input.closest('.event-row').querySelector('td:nth-child(1)').textContent
+                    };
+                }
+            });
+            
+            await updateGitHubFile('data/times.json', times);
+        }
+
+        async function loadTimesFromGitHub() {
+            const times = await getGitHubFile('data/times.json');
+            if (!times) return;
+            
+            const timeInputs = document.querySelectorAll('.time-input');
+            timeInputs.forEach(input => {
+                const athlete = input.getAttribute('data-athlete');
+                if (times[athlete]) {
+                    const currentEventNumber = input.closest('.event-row').querySelector('td:nth-child(1)').textContent;
+                    if (times[athlete].eventNumber === currentEventNumber) {
+                        input.value = times[athlete].time;
+                        const athleteId = athlete.replace(/\s+/g, '-');
+                        const seedElement = document.getElementById(`seed-${athleteId}`);
+                        if (seedElement) {
+                            seedElement.textContent = `Seed: ${times[athlete].time}`;
+                        }
+                        input.setAttribute('data-seed', times[athlete].time);
+                    }
+                }
+            });
+        }
+
+        async function saveConfigToGitHub() {
+            const config = {
+                passwordHash,
+                headerData,
+                teamData
+            };
+            await updateGitHubFile('data/config.json', config);
+        }
+
+        async function loadConfigFromGitHub() {
+            const config = await getGitHubFile('data/config.json');
+            if (config) {
+                passwordHash = config.passwordHash || DEFAULT_HASH;
+                headerData = config.headerData || {};
+                teamData = config.teamData || {};
+                
+                // Update UI with loaded data
+                Object.entries(headerData).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                });
+                
+                updateTeamStandings();
+            }
+        }
+
+        // Add GitHub configuration modal
+        function showGitHubConfig() {
+            if (!isAdmin) return;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                z-index: 1000;
+            `;
+            
+            modal.innerHTML = `
+                <h3>GitHub Configuration</h3>
+                <p>Enter your GitHub repository details:</p>
+                <div style="margin: 10px 0;">
+                    <label>Personal Access Token:</label><br>
+                    <input type="password" id="githubToken" value="${GITHUB_TOKEN}">
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Repository Owner:</label><br>
+                    <input type="text" id="githubOwner" value="${GITHUB_OWNER}">
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Repository Name:</label><br>
+                    <input type="text" id="githubRepo" value="${GITHUB_REPO}">
+                </div>
+                <button onclick="saveGitHubConfig()">Save</button>
+                <button onclick="this.parentElement.remove()">Cancel</button>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        async function saveGitHubConfig() {
+            GITHUB_TOKEN = document.getElementById('githubToken').value;
+            GITHUB_OWNER = document.getElementById('githubOwner').value;
+            GITHUB_REPO = document.getElementById('githubRepo').value;
+            
+            // Save the non-sensitive config to localStorage
+            localStorage.setItem('githubConfig', JSON.stringify({
+                owner: GITHUB_OWNER,
+                repo: GITHUB_REPO
+            }));
+            
+            // Test the connection
+            try {
+                await getGitHubFile('data/config.json');
+                alert('GitHub configuration saved successfully!');
+                document.querySelector('div[style*="position: fixed"]').remove();
+            } catch (error) {
+                alert('Failed to connect to GitHub. Please check your configuration.');
+            }
         }
     </script>
 </body>
