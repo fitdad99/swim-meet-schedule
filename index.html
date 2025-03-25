@@ -31,7 +31,7 @@
                     <table class="event-table">
                         <thead>
                             <tr>
-                                <th>Event #</th>
+                                <th>Evt #</th>
                                 <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -53,7 +53,7 @@
                     <table class="event-table">
             <thead>
                 <tr>
-                                <th>Event #</th>
+                                <th>Evt #</th>
                                 <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -77,7 +77,7 @@
                     <table class="event-table">
                         <thead>
                             <tr>
-                                <th>Event #</th>
+                                <th>Evt #</th>
                                 <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -99,7 +99,7 @@
                     <table class="event-table">
                         <thead>
                             <tr>
-                                <th>Event #</th>
+                                <th>Evt #</th>
                                 <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -123,7 +123,7 @@
                     <table class="event-table">
                             <thead>
                                 <tr>
-                                    <th>Event #</th>
+                                    <th>Evt #</th>
                                     <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -145,7 +145,7 @@
                     <table class="event-table">
                             <thead>
                                 <tr>
-                                    <th>Event #</th>
+                                    <th>Evt #</th>
                                     <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -165,27 +165,29 @@
         <div id="results" class="tab-content">
             <h3>Swim Results</h3>
             <div class="results-controls">
-                <button id="export-results" class="btn">Export Results to CSV</button>
-                        </div>
+                <button id="export-results" class="btn export-btn" title="Export Results to CSV">
+                    <i class="fas fa-file-export"></i>
+                </button>
+            </div>
             <div class="event-table-container">
                 <table class="event-table">
-                            <thead>
-                                <tr>
-                                    <th>Event #</th>
-                                    <th>Event Name</th>
+                    <thead>
+                        <tr>
+                            <th>Evt #</th>
+                            <th>Event Name</th>
                             <th>Athlete Name</th>
                             <th>Heat/Lane</th>
                             <th>Entry Time</th>
-                                    <th>Finishing Time</th>
+                            <th>Finishing Time</th>
                             <th>Time Difference</th>
-                                </tr>
-                            </thead>
+                        </tr>
+                    </thead>
                     <tbody id="results-table">
                         <!-- Results will be populated via JavaScript -->
-                            </tbody>
+                    </tbody>
                 </table>
-                    </div>
-                    </div>
+            </div>
+        </div>
     </main>
 
     <footer>

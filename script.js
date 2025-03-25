@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 heatLaneInput.placeholder = 'H/L';
                 heatLaneInput.classList.add('heat-lane-input');
                 heatLaneInput.readOnly = true;
-                heatLaneInput.value = `H${event.heat}/L${event.lane}`;
+                heatLaneInput.value = `H${event.heat} L${event.lane}`;
                 heatLaneCell.appendChild(heatLaneInput);
                 
                 // Entry time for the team
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     heatLaneInput.type = 'text';
                     heatLaneInput.placeholder = 'H/L';
                     heatLaneInput.classList.add('heat-lane-input');
-                    heatLaneInput.value = `H${athlete.heat}/L${athlete.lane}`;
+                    heatLaneInput.value = `H${athlete.heat} L${athlete.lane}`;
                     heatLaneInput.readOnly = true;
                     heatLaneCell.appendChild(heatLaneInput);
                     
@@ -588,7 +588,153 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
+        // Save to localStorage after updating
+        saveResultsToStorage();
+        
         alert('Result saved successfully!');
+    }
+
+    // Load saved results from storage
+    loadResultsFromStorage();
+
+    // Function to save results to local storage
+    function saveResultsToStorage() {
+        const resultsTable = document.getElementById('results-table');
+        const rows = resultsTable.querySelectorAll('tr');
+        const resultsData = [];
+        
+        // Group regular rows with their related relay info rows
+        let currentMainRow = null;
+        let relayInfoRows = [];
+        
+        rows.forEach(row => {
+            if (row.classList.contains('results-relay-info')) {
+                // This is a relay info row, add to current group
+                relayInfoRows.push({
+                    relayInfoFor: row.dataset.relayInfoFor,
+                    content: row.querySelector('td').textContent
+                });
+            } else {
+                // This is a main result row
+                // First, save the previous group if it exists
+                if (currentMainRow) {
+                    resultsData.push({
+                        mainRow: currentMainRow,
+                        relayInfo: relayInfoRows
+                    });
+                    relayInfoRows = [];
+                }
+                
+                // Start a new group
+                currentMainRow = {
+                    eventNum: row.dataset.eventNum,
+                    athlete: row.dataset.athlete,
+                    eventName: row.querySelector('td:nth-child(2)').textContent,
+                    heatLane: row.querySelector('td:nth-child(4)').textContent,
+                    entryTime: row.querySelector('td:nth-child(5)').textContent,
+                    finishTime: row.querySelector('td:nth-child(6)').textContent,
+                    timeDiff: row.querySelector('td:nth-child(7)').textContent,
+                    isImprovement: row.querySelector('td:nth-child(7)').classList.contains('improvement'),
+                    isSlower: row.querySelector('td:nth-child(7)').classList.contains('slower')
+                };
+            }
+        });
+        
+        // Save the last group if it exists
+        if (currentMainRow) {
+            resultsData.push({
+                mainRow: currentMainRow,
+                relayInfo: relayInfoRows
+            });
+        }
+        
+        // Store in local storage
+        localStorage.setItem('MSSPP2025_Results', JSON.stringify(resultsData));
+    }
+    
+    // Function to load results from local storage
+    function loadResultsFromStorage() {
+        const savedData = localStorage.getItem('MSSPP2025_Results');
+        if (!savedData) return;
+        
+        try {
+            const resultsData = JSON.parse(savedData);
+            const resultsTable = document.getElementById('results-table');
+            
+            // Clear existing results
+            resultsTable.innerHTML = '';
+            
+            // Recreate rows from saved data
+            resultsData.forEach(group => {
+                const { mainRow, relayInfo } = group;
+                
+                // Create main result row
+                const resultRow = document.createElement('tr');
+                resultRow.dataset.eventNum = mainRow.eventNum;
+                resultRow.dataset.athlete = mainRow.athlete;
+                
+                const eventNumCell = document.createElement('td');
+                eventNumCell.textContent = mainRow.eventNum;
+                
+                const eventNameCell = document.createElement('td');
+                eventNameCell.textContent = mainRow.eventName;
+                
+                const athleteCell = document.createElement('td');
+                athleteCell.textContent = mainRow.athlete;
+                
+                const heatLaneCell = document.createElement('td');
+                heatLaneCell.textContent = mainRow.heatLane;
+                heatLaneCell.classList.add('heat-lane-cell');
+                
+                const entryTimeCell = document.createElement('td');
+                entryTimeCell.textContent = mainRow.entryTime;
+                entryTimeCell.classList.add('entry-time-cell');
+                
+                const finishTimeCell = document.createElement('td');
+                finishTimeCell.textContent = mainRow.finishTime;
+                finishTimeCell.classList.add('finish-time-cell');
+                
+                const timeDiffCell = document.createElement('td');
+                timeDiffCell.textContent = mainRow.timeDiff;
+                timeDiffCell.classList.add('time-diff-cell');
+                if (mainRow.isImprovement) {
+                    timeDiffCell.classList.add('improvement');
+                } else if (mainRow.isSlower) {
+                    timeDiffCell.classList.add('slower');
+                }
+                
+                resultRow.appendChild(eventNumCell);
+                resultRow.appendChild(eventNameCell);
+                resultRow.appendChild(athleteCell);
+                resultRow.appendChild(heatLaneCell);
+                resultRow.appendChild(entryTimeCell);
+                resultRow.appendChild(finishTimeCell);
+                resultRow.appendChild(timeDiffCell);
+                
+                resultsTable.appendChild(resultRow);
+                
+                // Add relay info rows if present
+                relayInfo.forEach(info => {
+                    const infoRow = document.createElement('tr');
+                    infoRow.classList.add('results-relay-info');
+                    infoRow.dataset.relayInfoFor = info.relayInfoFor;
+                    
+                    const infoCell = document.createElement('td');
+                    infoCell.colSpan = 7;
+                    infoCell.textContent = info.content;
+                    infoCell.style.paddingLeft = '30px';
+                    infoCell.style.fontSize = '0.9em';
+                    infoCell.style.color = '#555';
+                    infoCell.style.backgroundColor = '#f5f9ff';
+                    infoCell.style.borderBottom = '1px dashed #ddd';
+                    
+                    infoRow.appendChild(infoCell);
+                    resultsTable.appendChild(infoRow);
+                });
+            });
+        } catch (e) {
+            console.error('Error loading saved results:', e);
+        }
     }
 
     // Calculate time difference between entry and finish time
@@ -668,7 +814,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Export results to CSV
+    // Export results to CSV - update to match the new button style
     document.getElementById('export-results').addEventListener('click', function() {
         exportResultsToCSV();
     });
