@@ -3,1230 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <title>MSSPP 2025 Swim Meet Schedule</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-        
-        body {
-            padding: 20px;
-            background-color: #f0f8ff;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #003366;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            color: #0066cc;
-        }
-        
-        h3 {
-            font-size: 1.5rem;
-            margin: 25px 0 15px 0;
-            color: white;
-            background-color: #004080;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        
-        h4 {
-            font-size: 1.3rem;
-            margin: 20px 0 10px 0;
-            color: white;
-            background-color: #0066cc;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        
-        .event-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .event-table th, 
-        .event-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-            vertical-align: top;
-        }
-        
-        .event-table th {
-            background-color: #003366;
-            color: white;
-        }
-        
-        .event-table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        
-        .event-table tr:hover {
-            background-color: #dff0ff;
-        }
-        
-        .day-header {
-            background-color: #004080;
-            color: white;
-            padding: 15px;
-            margin: 30px 0 15px 0;
-            border-radius: 5px;
-        }
-        
-        .session-header {
-            background-color: #0066cc;
-            color: white;
-            padding: 10px;
-            margin: 20px 0 10px 0;
-            border-radius: 5px;
-        }
-        
-        .athlete-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        
-        .athlete-list li {
-            padding: 6px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .athlete-name {
-            flex: 1;
-        }
-        
-        .relay-list {
-            list-style-type: decimal;
-            padding-left: 20px;
-        }
-        
-        .relay-list li {
-            padding: 4px 0;
-        }
-        
-        .filter-section {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .filter-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        
-        .filter-buttons {
-            margin-top: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .filter-button {
-            padding: 8px 15px;
-            background-color: #0066cc;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        
-        .filter-button:hover {
-            background-color: #004080;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .athlete-time-input {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .athlete-time-input input {
-            width: 80px;
-            padding: 5px;
-            margin-top: 5px;
-        }
-
-        .results-container {
-            margin-top: 20px;
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .results-container h3 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: #004080;
-            background-color: transparent;
-            padding: 0;
-        }
-        
-        .results-container p {
-            margin-bottom: 5px;
-        }
-        
-        .display-results-button {
-            padding: 10px 20px;
-            background-color: #004080;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin: 20px 0;
-        }
-        
-        .display-results-button:hover {
-            background-color: #002040;
-        }
-        
-        .heat-lane-info {
-            display: flex;
-            gap: 10px;
-            margin-left: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .heat-lane-tag {
-            background-color: #0066cc;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-        }
-        
-        .seed-time-tag {
-            background-color: #004080;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-        }
-        
-        .athlete-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-        
-        .info-container {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-        
-        .improvement {
-            color: green;
-            font-weight: bold;
-        }
-        
-        .slower {
-            color: red;
-        }
-        
-        .unchanged {
-            color: #666;
-        }
-
-        /* New styles for the combined athlete rows */
-        .athlete-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 6px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .athlete-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
-        .athlete-name {
-            flex: 1;
-            padding-right: 15px;
-        }
-
-        .athlete-details {
-            flex: 2;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-        
-        @media screen and (max-width: 768px) {
-            .event-table {
-                font-size: 0.9rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            h2 {
-                font-size: 1.5rem;
-            }
-            
-            h3 {
-                font-size: 1.3rem;
-            }
-            
-            h4 {
-                font-size: 1.1rem;
-            }
-            
-            .filter-buttons {
-                flex-direction: column;
-            }
-            
-            .heat-lane-info {
-                display: block;
-                margin-top: 3px;
-                margin-left: 0;
-            }
-            
-            .heat-lane-tag, .seed-time-tag {
-                display: inline-block;
-                margin-right: 5px;
-                margin-bottom: 3px;
-            }
-            
-            .athlete-info {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .info-container {
-                margin-top: 5px;
-            }
-
-            .athlete-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .athlete-name {
-                margin-bottom: 5px;
-            }
-
-            .athlete-details {
-                justify-content: flex-start;
-            }
-        }
-        
-        @media screen and (max-width: 480px) {
-            .event-table {
-                font-size: 0.8rem;
-            }
-            
-            .event-table th, 
-            .event-table td {
-                padding: 8px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            h2 {
-                font-size: 1.3rem;
-            }
-            
-            h3 {
-                font-size: 1.1rem;
-            }
-            
-            h4 {
-                font-size: 1rem;
-            }
-            
-            body {
-                padding: 10px;
-            }
-        }
-
-        /* Add new styles for CSV upload */
-        .csv-upload {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .csv-upload input[type="file"] {
-            margin: 10px 0;
-        }
-
-        .upload-button {
-            padding: 8px 15px;
-            background-color: #0066cc;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        .upload-button:hover {
-            background-color: #004080;
-        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Admin Panel Styles */
-        .admin-panel {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .admin-button {
-            padding: 8px 15px;
-            background-color: #003366;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .admin-button:hover {
-            background-color: #004080;
-        }
-
-        .admin-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1001;
-        }
-
-        .admin-modal-content {
-            position: relative;
-            background-color: white;
-            margin: 10% auto;
-            padding: 20px;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .admin-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .admin-modal-close {
-            cursor: pointer;
-            font-size: 1.5rem;
-        }
-
-        .admin-form-group {
-            margin-bottom: 15px;
-        }
-
-        .admin-form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .admin-form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .admin-form-group input[type="password"] {
-            font-family: monospace;
-        }
-
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .admin-button {
-            flex: 1;
-        }
-
-        /* Upload Status Styles */
-        .upload-status {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 4px;
-            display: none;
-        }
-
-        .upload-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .upload-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        /* Header Customization Styles */
-        .header-customization {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-        }
-
-        .header-customization input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        /* Date and Time Display */
-        .datetime-display {
-            text-align: center;
-            margin: 10px 0;
-            font-size: 1.2rem;
-            color: #003366;
-            font-weight: bold;
-        }
-    </style>
+    <title>MSSPP 2025 - Keong Hoe Swim Team</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="admin-panel">
-        <button onclick="toggleAdminPanel()" class="admin-button" id="adminButton">Admin Panel</button>
-    </div>
+    <header>
+        <div class="container">
+            <h1>Keong Hoe Swim Team 2025</h1>
+            <h2>MSSPP 2025 - April 7-9, 2025</h2>
+        </div>
+    </header>
 
-    <div id="adminModal" class="admin-modal">
-        <div class="admin-modal-content">
-            <div class="admin-modal-header">
-                <h3>Admin Panel</h3>
-                <span class="admin-modal-close" onclick="toggleAdminPanel()">&times;</span>
+    <main class="container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="day1">Day 1 (April 7)</button>
+            <button class="tab-btn" data-tab="day2">Day 2 (April 8)</button>
+            <button class="tab-btn" data-tab="day3">Day 3 (April 9)</button>
+            <button class="tab-btn" data-tab="results">Results</button>
+        </div>
+
+        <div id="day1" class="tab-content active">
+            <div class="session">
+                <h3>Morning Session (8:00 AM)</h3>
+                <div class="event-table-container">
+                    <table class="event-table">
+                        <thead>
+                            <tr>
+                                <th>Event #</th>
+                                <th>Event Name</th>
+                                <th>Athlete Name</th>
+                                <th>Heat/Lane</th>
+                                <th>Entry Time</th>
+                                <th>Finishing Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="day1-morning-events">
+                            <!-- Day 1 Morning Events will be populated via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div id="loginForm">
-                <div class="admin-form-group">
-                    <label for="adminUsername">Username:</label>
-                    <input type="text" id="adminUsername" required>
-                </div>
-                <div class="admin-form-group">
-                    <label for="adminPassword">Password:</label>
-                    <input type="password" id="adminPassword" required>
-                </div>
-                <div class="admin-actions">
-                    <button onclick="adminLogin()" class="admin-button">Admin Panel</button>
-                </div>
-            </div>
-            <div id="adminControls" style="display: none;">
-                <div class="header-customization">
-                    <h4>Header Customization</h4>
-                    <input type="text" id="teamName" placeholder="Team Name">
-                    <input type="text" id="meetName" placeholder="Meet Name">
-                    <input type="text" id="meetDate" placeholder="Meet Date">
-                    <input type="text" id="meetLocation" placeholder="Meet Location">
-                </div>
-                <div class="admin-form-group">
-                    <label for="newPassword">New Password:</label>
-                    <input type="password" id="newPassword" placeholder="Enter new password">
-                </div>
-                <div class="admin-actions">
-                    <button onclick="updateHeaders()" class="admin-button">Update Headers</button>
-                    <button onclick="changePassword()" class="admin-button">Change Password</button>
-                    <button onclick="clearAllData()" class="admin-button">Clear All Data</button>
-                    <button onclick="adminLogout()" class="admin-button">Logout</button>
+            
+            <div class="session">
+                <h3>Afternoon Session (2:00 PM)</h3>
+                <div class="event-table-container">
+                    <table class="event-table">
+                        <thead>
+                            <tr>
+                                <th>Event #</th>
+                                <th>Event Name</th>
+                                <th>Athlete Name</th>
+                                <th>Heat/Lane</th>
+                                <th>Entry Time</th>
+                                <th>Finishing Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="day1-afternoon-events">
+                            <!-- Day 1 Afternoon Events will be populated via JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="header">
-        <h1 id="teamNameHeader">Keong Hoe Swim Team 2025</h1>
-        <h2 id="meetNameHeader">MSSPP 2025</h2>
-        <p id="meetDateHeader">April 7-9, 2025</p>
-        <p id="meetLocationHeader">Penang Swimming Club</p>
-    </div>
-
-    <div class="datetime-display" id="currentDateTime"></div>
-
-    <div class="csv-upload" id="csvUploadSection" style="display: none;">
-        <h3>Upload Swimmers Data</h3>
-        <p>Upload a CSV file with the following columns: Day, Session, Event#, EventName, AthleteNames, Heat, Lane, SeedTime</p>
-        <input type="file" id="csvFile" accept=".csv">
-        <button onclick="handleFileUpload()" class="upload-button">Upload CSV</button>
-        <div id="uploadStatus" class="upload-status"></div>
-    </div>
-    
-    <div class="filter-section">
-        <h3>Filter Events</h3>
-        <input type="text" id="swimmer-filter" class="filter-input" placeholder="Enter swimmer name...">
-        <button onclick="filterBySwimmer()" class="filter-button">Filter</button>
-        <button onclick="resetFilter()" class="filter-button">Show All</button>
-        
-        <div class="filter-buttons">
-            <button onclick="filterByDay(1)" class="filter-button">Day 1</button>
-            <button onclick="filterByDay(2)" class="filter-button">Day 2</button>
-            <button onclick="filterByDay(3)" class="filter-button">Day 3</button>
+        <div id="day2" class="tab-content">
+            <div class="session">
+                <h3>Morning Session (8:00 AM)</h3>
+                <div class="event-table-container">
+                    <table class="event-table">
+                        <thead>
+                            <tr>
+                                <th>Event #</th>
+                                <th>Event Name</th>
+                                <th>Athlete Name</th>
+                                <th>Heat/Lane</th>
+                                <th>Entry Time</th>
+                                <th>Finishing Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="day2-morning-events">
+                            <!-- Day 2 Morning Events will be populated via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="session">
+                <h3>Afternoon Session (2:00 PM)</h3>
+                <div class="event-table-container">
+                    <table class="event-table">
+                        <thead>
+                            <tr>
+                                <th>Event #</th>
+                                <th>Event Name</th>
+                                <th>Athlete Name</th>
+                                <th>Heat/Lane</th>
+                                <th>Entry Time</th>
+                                <th>Finishing Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="day2-afternoon-events">
+                            <!-- Day 2 Afternoon Events will be populated via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-    
-    <div class="day-header day-1">
-        <h3>Day 1 - Monday, April 7, 2025</h3>
-    </div>
-    
-    <div class="session-header day-1">
-        <h4>Morning Session - Starting at 8:00 AM</h4>
-    </div>
-    
-    <table class="event-table day-1">
-        <thead>
-            <tr>
-                <th>Event #</th>
-                <th>Event Name</th>
-                <th>Athletes & Heat/Lane Information</th>
-                <th>Finishing Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="event-row" data-athletes="Ling Shen Yang,Ayden Koay,Yeoh Li Ze">
-                <td>102</td>
-                <td>Boys 12U 100 Freestyle</td>
-                <td>
-                    <div class="athlete-row">
-                        <div class="athlete-name">Ling Shen Yang (5U)</div>
-                        <div class="athlete-details">
-                            <span class="heat-lane-tag">Heat 1</span>
-                            <span class="heat-lane-tag">Lane 4</span>
-                            <span class="seed-time-tag" id="seed-Ling-Shen-Yang">Seed: 1:12.45</span>
-                        </div>
-                    </div>
-                    <div class="athlete-row">
-                        <div class="athlete-name">Ayden Koay (4K)</div>
-                        <div class="athlete-details">
-                            <span class="heat-lane-tag">Heat 2</span>
-                            <span class="heat-lane-tag">Lane 3</span>
-                            <span class="seed-time-tag" id="seed-Ayden-Koay">Seed: 1:15.67</span>
-                        </div>
-                    </div>
-                    <div class="athlete-row">
-                        <div class="athlete-name">Yeoh Li Ze (4H)</div>
-                        <div class="athlete-details">
-                            <span class="heat-lane-tag">Heat 3</span>
-                            <span class="heat-lane-tag">Lane 5</span>
-                            <span class="seed-time-tag" id="seed-Yeoh-Li-Ze">Seed: 1:18.23</span>
-                        </div>
-                    </div>
-                </td>
-                <td class="athlete-time-input">
-                    <input type="text" class="time-input" data-athlete="Ling Shen Yang" data-heat="1" data-lane="4" data-seed="1:12.45">
-                    <input type="text" class="time-input" data-athlete="Ayden Koay" data-heat="2" data-lane="3" data-seed="1:15.67">
-                    <input type="text" class="time-input" data-athlete="Yeoh Li Ze" data-heat="3" data-lane="5" data-seed="1:18.23">
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Ayden Koay,Lee Jia Kai,Ainatul Dhamia,Law Yin Er">
-                <td>114</td>
-                <td>Mixed 12U 200 Freestyle Relay</td>
-                <td>
-                    <div class="athlete-row">
-                        <div class="athlete-name">
-                            <ol class="relay-list">
-                                <li>Ayden Koay (4K)</li>
-                                <li>Lee Jia Kai (4K)</li>
-                                <li>Ainatul Dhamia (5K)</li>
-                                <li>Law Yin Er (6B)</li>
-                            </ol>
-                        </div>
-                        <div class="athlete-details">
-                            <span class="heat-lane-tag">Heat 1</span>
-                            <span class="heat-lane-tag">Lane 4</span>
-                            <span class="seed-time-tag" id="seed-Team-Relay">Seed: 2:05.34</span>
-                        </div>
-                    </div>
-                </td>
-                <td class="athlete-time-input">
-                    <input type="text" class="time-input" data-athlete="Team Relay" data-heat="1" data-lane="4" data-seed="2:05.34">
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <button onclick="displayResults()" class="display-results-button">Show Results</button>
-    <div class="results-container" id="results"></div>
-    
-    <div class="copyright">
-        © 2024 Koay Ween Ching. All rights reserved.
-    </div>
-    
-    <script>
-        // Admin functionality
-        let isAdmin = false;
-        const ADMIN_USERNAME = 'admin';
-        let ADMIN_PASSWORD = '9e4c2e640e661edcdc9d4af7d3c535c5c5dfcc4c522c512a300719fc4f181ef9'; // admin123 in SHA256
 
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex;
-        }
-
-        function toggleAdminPanel() {
-            const modal = document.getElementById('adminModal');
-            modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
-        }
-
-        async function adminLogin() {
-            const username = document.getElementById('adminUsername').value;
-            const password = document.getElementById('adminPassword').value;
-            const hashedPassword = await sha256(password);
-
-            if (username === ADMIN_USERNAME && hashedPassword === ADMIN_PASSWORD) {
-                isAdmin = true;
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('adminControls').style.display = 'block';
-                document.getElementById('csvUploadSection').style.display = 'block';
-                document.getElementById('adminButton').textContent = 'Admin Panel';
-                // Enable all time inputs
-                document.querySelectorAll('.time-input').forEach(input => {
-                    input.disabled = false;
-                });
-                toggleAdminPanel();
-            } else {
-                alert('Invalid credentials');
-            }
-        }
-
-        function adminLogout() {
-            isAdmin = false;
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('adminControls').style.display = 'none';
-            document.getElementById('csvUploadSection').style.display = 'none';
-            document.getElementById('adminButton').textContent = 'Admin Panel';
-            // Disable all time inputs
-            document.querySelectorAll('.time-input').forEach(input => {
-                input.disabled = true;
-            });
-            toggleAdminPanel();
-        }
-
-        async function changePassword() {
-            const newPassword = document.getElementById('newPassword').value;
-            if (!newPassword) {
-                alert('Please enter a new password');
-                return;
-            }
-            if (newPassword.length < 8) {
-                alert('Password must be at least 8 characters long');
-                return;
-            }
-            if (!/[A-Z]/.test(newPassword)) {
-                alert('Password must contain at least one uppercase letter');
-                return;
-            }
-            if (!/[a-z]/.test(newPassword)) {
-                alert('Password must contain at least one lowercase letter');
-                return;
-            }
-            if (!/[0-9]/.test(newPassword)) {
-                alert('Password must contain at least one number');
-                return;
-            }
+        <div id="day3" class="tab-content">
+            <div class="session">
+                <h3>Morning Session (8:00 AM)</h3>
+                <div class="event-table-container">
+                    <table class="event-table">
+                        <thead>
+                            <tr>
+                                <th>Event #</th>
+                                <th>Event Name</th>
+                                <th>Athlete Name</th>
+                                <th>Heat/Lane</th>
+                                <th>Entry Time</th>
+                                <th>Finishing Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="day3-morning-events">
+                            <!-- Day 3 Morning Events will be populated via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             
-            try {
-                ADMIN_PASSWORD = await sha256(newPassword);
-                alert('Password updated successfully');
-                document.getElementById('newPassword').value = '';
-            } catch (error) {
-                alert('Error updating password: ' + error.message);
-            }
-        }
+            <div class="session">
+                <h3>Afternoon Session (2:00 PM)</h3>
+                <div class="event-table-container">
+                    <table class="event-table">
+                        <thead>
+                            <tr>
+                                <th>Event #</th>
+                                <th>Event Name</th>
+                                <th>Athlete Name</th>
+                                <th>Heat/Lane</th>
+                                <th>Entry Time</th>
+                                <th>Finishing Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="day3-afternoon-events">
+                            <!-- Day 3 Afternoon Events will be populated via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-        function updateHeaders() {
-            document.getElementById('teamNameHeader').textContent = document.getElementById('teamName').value;
-            document.getElementById('meetNameHeader').textContent = document.getElementById('meetName').value;
-            document.getElementById('meetDateHeader').textContent = document.getElementById('meetDate').value;
-            document.getElementById('meetLocationHeader').textContent = document.getElementById('meetLocation').value;
-        }
+        <div id="results" class="tab-content">
+            <h3>Swim Results</h3>
+            <div class="results-controls">
+                <button id="export-results" class="btn">Export Results to CSV</button>
+            </div>
+            <div class="event-table-container">
+                <table class="event-table">
+                    <thead>
+                        <tr>
+                            <th>Event #</th>
+                            <th>Event Name</th>
+                            <th>Athlete Name</th>
+                            <th>Heat/Lane</th>
+                            <th>Entry Time</th>
+                            <th>Finishing Time</th>
+                            <th>Time Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-table">
+                        <!-- Results will be populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
-        // DateTime display
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
-        }
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Keong Hoe Swim Team. All rights reserved.</p>
+        </div>
+    </footer>
 
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
-
-        // Dynamic copyright year
-        document.querySelector('.copyright').innerHTML = `© ${new Date().getFullYear()} Koay Ween Ching. All rights reserved.`;
-
-        // Improved CSV upload functionality
-        function handleFileUpload() {
-            if (!isAdmin) {
-                alert('Please login as admin to upload CSV');
-                return;
-            }
-
-            const fileInput = document.getElementById('csvFile');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                showUploadStatus('Please select a file', false);
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const csvData = parseCSV(e.target.result);
-                    if (!document.getElementById('eventContent')) {
-                        // Create eventContent div if it doesn't exist
-                        const contentDiv = document.createElement('div');
-                        contentDiv.id = 'eventContent';
-                        // Insert before the results button
-                        const resultsButton = document.querySelector('.display-results-button');
-                        resultsButton.parentNode.insertBefore(contentDiv, resultsButton);
-                    }
-                    generateEventContent(csvData);
-                    showUploadStatus('CSV uploaded successfully', true);
-                    fileInput.value = ''; // Clear the file input
-                    
-                    // Disable time inputs for non-admin users
-                    if (!isAdmin) {
-                        document.querySelectorAll('.time-input').forEach(input => {
-                            input.disabled = true;
-                        });
-                    }
-                } catch (error) {
-                    showUploadStatus('Error processing CSV: ' + error.message, false);
-                }
-            };
-
-            reader.onerror = function() {
-                showUploadStatus('Error reading file', false);
-            };
-
-            reader.readAsText(file);
-        }
-
-        function showUploadStatus(message, isSuccess) {
-            const statusDiv = document.getElementById('uploadStatus');
-            statusDiv.textContent = message;
-            statusDiv.className = 'upload-status ' + (isSuccess ? 'upload-success' : 'upload-error');
-            statusDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 5000);
-        }
-
-        // Improved time difference calculation
-        function compareTime(time1, time2) {
-            function timeToSeconds(timeStr) {
-                const parts = timeStr.split(':');
-                let minutes = 0;
-                let seconds = 0;
-                
-                if (parts.length === 2) {
-                    minutes = parseFloat(parts[0]);
-                    seconds = parseFloat(parts[1]);
-                } else {
-                    seconds = parseFloat(parts[0]);
-                }
-                
-                return (minutes * 60) + seconds;
-            }
-            
-            const t1Seconds = timeToSeconds(time1);
-            const t2Seconds = timeToSeconds(time2);
-            
-            if (isNaN(t1Seconds) || isNaN(t2Seconds)) {
-                throw new Error('Invalid time format');
-            }
-            
-            return t1Seconds - t2Seconds;
-        }
-
-        // Function to parse CSV data
-        function parseCSV(csv) {
-            try {
-                const lines = csv.split('\n');
-                const headers = lines[0].split(',').map(h => h.trim());
-                const data = [];
-                
-                // Check if all required headers exist
-                const requiredHeaders = ['Day', 'Session', 'Event#', 'EventName', 'AthleteNames', 'Heat', 'Lane', 'SeedTime'];
-                for (let header of requiredHeaders) {
-                    if (!headers.includes(header)) {
-                        throw new Error(`Missing required header: ${header}`);
-                    }
-                }
-                
-                for(let i = 1; i < lines.length; i++) {
-                    if(!lines[i].trim()) continue;
-                    const values = lines[i].split(',').map(v => v.trim());
-                    const row = {};
-                    
-                    // Check if row has enough values
-                    if (values.length < headers.length) {
-                        throw new Error(`Row ${i} has fewer columns than expected`);
-                    }
-                    
-                    headers.forEach((header, index) => {
-                        row[header] = values[index] || '';
-                        
-                        // Validate that required fields have values
-                        if (requiredHeaders.includes(header) && !row[header]) {
-                            throw new Error(`Row ${i} is missing value for ${header}`);
-                        }
-                    });
-                    data.push(row);
-                }
-                return data;
-            } catch (error) {
-                throw new Error(error.message);
-            }
-        }
-
-        // Function to generate event content from CSV data
-        function generateEventContent(data) {
-            const contentDiv = document.getElementById('eventContent');
-            contentDiv.innerHTML = '';
-            
-            let currentDay = '';
-            let currentSession = '';
-            
-            data.forEach(row => {
-                if (row.Day !== currentDay) {
-                    currentDay = row.Day;
-                    contentDiv.innerHTML += `
-                        <div class="day-header day-${currentDay}">
-                            <h3>Day ${currentDay}</h3>
-                        </div>
-                    `;
-                }
-                
-                if (row.Session !== currentSession) {
-                    currentSession = row.Session;
-                    contentDiv.innerHTML += `
-                        <div class="session-header day-${currentDay}">
-                            <h4>${currentSession}</h4>
-                        </div>
-                    `;
-                    
-                    contentDiv.innerHTML += `
-                        <table class="event-table day-${currentDay}">
-                            <thead>
-                                <tr>
-                                    <th>Event #</th>
-                                    <th>Event Name</th>
-                                    <th>Athletes & Heat/Lane Information</th>
-                                    <th>Finishing Time</th>
-                                </tr>
-                            </thead>
-                            <tbody id="session-${currentDay}-${currentSession.replace(/\s+/g, '-')}">
-                            </tbody>
-                        </table>
-                    `;
-                }
-                
-                const tbody = document.getElementById(`session-${currentDay}-${currentSession.replace(/\s+/g, '-')}`);
-                const athletes = row.AthleteNames.split(';');
-                const heats = row.Heat.split(';');
-                const lanes = row.Lane.split(';');
-                const seedTimes = row.SeedTime.split(';');
-                
-                let athleteRows = '';
-                athletes.forEach((athlete, index) => {
-                    athleteRows += `
-                        <div class="athlete-row">
-                            <div class="athlete-name">${athlete}</div>
-                            <div class="athlete-details">
-                                <span class="heat-lane-tag">Heat ${heats[index]}</span>
-                                <span class="heat-lane-tag">Lane ${lanes[index]}</span>
-                                <span class="seed-time-tag" id="seed-${athlete.replace(/\s+/g, '-')}">Seed: ${seedTimes[index]}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                const timeInputs = athletes.map((athlete, index) => `
-                    <input type="text" class="time-input" 
-                           data-athlete="${athlete}" 
-                           data-heat="${heats[index]}" 
-                           data-lane="${lanes[index]}" 
-                           data-seed="${seedTimes[index]}">
-                `).join('');
-                
-                tbody.innerHTML += `
-                    <tr class="event-row" data-athletes="${row.AthleteNames.replace(/;/g, ',')}">
-                        <td>${row.Event}</td>
-                        <td>${row.EventName}</td>
-                        <td>${athleteRows}</td>
-                        <td class="athlete-time-input">${timeInputs}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function filterBySwimmer() {
-            const searchTerm = document.getElementById('swimmer-filter').value.trim().toLowerCase();
-            if (searchTerm === '') {
-                resetFilter();
-                return;
-            }
-            
-            const rows = document.querySelectorAll('.event-row');
-            
-            rows.forEach(row => {
-                const athletes = row.getAttribute('data-athletes').toLowerCase();
-                if (athletes.includes(searchTerm)) {
-                    row.classList.remove('hidden');
-                    
-                    // Show the parent table and headers
-                    let currentElement = row.parentElement;
-                    while (currentElement) {
-                        if (currentElement.tagName === 'TABLE') {
-                            currentElement.classList.remove('hidden');
-                            const dayClass = currentElement.className.split(' ')[1];
-                            document.querySelectorAll('.' + dayClass).forEach(el => {
-                                el.classList.remove('hidden');
-                            });
-                            break;
-                        }
-                        currentElement = currentElement.parentElement;
-                    }
-                } else {
-                    row.classList.add('hidden');
-                }
-            });
-            
-            // Hide empty tables
-            const tables = document.querySelectorAll('.event-table');
-            tables.forEach(table => {
-                const visibleRows = table.querySelectorAll('.event-row:not(.hidden)');
-                if (visibleRows.length === 0) {
-                    table.classList.add('hidden');
-                    const dayClass = table.className.split(' ')[1];
-                    const tableIndex = Array.from(document.querySelectorAll('.' + dayClass + '.event-table')).indexOf(table);
-                    const sessionHeaders = document.querySelectorAll('.' + dayClass + '.session-header');
-                    if (sessionHeaders[tableIndex]) {
-                        sessionHeaders[tableIndex].classList.add('hidden');
-                    }
-                }
-            });
-            
-            // Hide empty days
-            const dayClasses = ['day-1', 'day-2', 'day-3'];
-            dayClasses.forEach(dayClass => {
-                const visibleTables = document.querySelectorAll('.' + dayClass + '.event-table:not(.hidden)');
-                if (visibleTables.length === 0) {
-                    document.querySelectorAll('.' + dayClass + '.day-header').forEach(header => {
-                        header.classList.add('hidden');
-                    });
-                }
-            });
-        }
-        
-        function resetFilter() {
-            document.getElementById('swimmer-filter').value = '';
-            const elements = document.querySelectorAll('.event-row, .event-table, .session-header, .day-header');
-            elements.forEach(el => {
-                el.classList.remove('hidden');
-            });
-        }
-        
-        function filterByDay(day) {
-            resetFilter();
-            const dayClass = 'day-' + day;
-            const allDays = document.querySelectorAll('.day-1, .day-2, .day-3');
-            
-            allDays.forEach(element => {
-                if (!element.classList.contains(dayClass)) {
-                    element.classList.add('hidden');
-                }
-            });
-        }
-        
-        // Helper function to format time difference
-        function formatTimeDifference(finishTime, seedTime) {
-            const diff = compareTime(finishTime, seedTime);
-            
-            // Format the difference as +/- seconds
-            if (diff < 0) {
-                // Improved time (negative difference means faster)
-                return `<span class="improvement">-${Math.abs(diff).toFixed(2)}s</span>`;
-            } else if (diff > 0) {
-                // Slower time
-                return `<span class="slower">+${diff.toFixed(2)}s</span>`;
-            } else {
-                // Same time
-                return `<span class="unchanged">±0.00s</span>`;
-            }
-        }
-
-        // Modified displayResults function to keep original seed times
-        function displayResults() {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<h2>Swim Meet Results</h2>';
-            const eventRows = document.querySelectorAll('.event-row');
-            let hasResults = false;
-
-            eventRows.forEach(row => {
-                const eventNumber = row.querySelector('td:nth-child(1)').textContent;
-                const eventName = row.querySelector('td:nth-child(2)').textContent;
-                const timeInputs = row.querySelectorAll('.time-input');
-                
-                let hasTime = false;
-                timeInputs.forEach(input => {
-                    if (input.value.trim() !== '') {
-                        hasTime = true;
-                        // Don't update seed time tags - keep original seed times
-                    }
-                });
-                
-                if (hasTime) {
-                    hasResults = true;
-                    let resultText = `<h3>Event #${eventNumber}: ${eventName}</h3>`;
-                    
-                    let swimmers = [];
-                    timeInputs.forEach(input => {
-                        const athlete = input.getAttribute('data-athlete');
-                        const time = input.value.trim();
-                        const heat = input.getAttribute('data-heat');
-                        const lane = input.getAttribute('data-lane');
-                        const seed = input.getAttribute('data-seed');  // Original seed time
-                        
-                        if (time !== '') {
-                            swimmers.push({
-                                name: athlete,
-                                time: time,
-                                heat: heat,
-                                lane: lane,
-                                seed: seed
-                            });
-                        }
-                    });
-                    
-                    if (swimmers.length > 1 && !swimmers[0].name.includes("Team")) {
-                        swimmers.sort((a, b) => compareTime(a.time, b.time));
-                    }
-                    
-                    swimmers.forEach((swimmer, index) => {
-                        const timeDiff = formatTimeDifference(swimmer.time, swimmer.seed);
-                        
-                        if (!swimmer.name.includes("Team") && swimmers.length > 1) {
-                            resultText += `<p>${index + 1}. ${swimmer.name} (Heat ${swimmer.heat}, Lane ${swimmer.lane}): ${swimmer.time} 
-                                          <small>(Seed: ${swimmer.seed}, Diff: ${timeDiff})</small></p>`;
-                        } else {
-                            resultText += `<p>${swimmer.name} (Heat ${swimmer.heat}, Lane ${swimmer.lane}): ${swimmer.time} 
-                                          <small>(Seed: ${swimmer.seed}, Diff: ${timeDiff})</small></p>`;
-                        }
-                    });
-                    
-                    resultsDiv.innerHTML += resultText;
-                }
-            });
-            
-            if (!hasResults) {
-                resultsDiv.innerHTML += "<p>No results have been entered yet.</p>";
-            }
-        }
-
-        // When the page loads, disable all time inputs
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.time-input').forEach(input => {
-                input.disabled = true;
-            });
-        });
-
-        // Add the clearAllData function
-        function clearAllData() {
-            if (confirm("Are you sure you want to clear all swim meet data? This action cannot be undone.")) {
-                // Clear the event content
-                const contentDiv = document.getElementById('eventContent');
-                if (contentDiv) {
-                    contentDiv.innerHTML = '';
-                }
-                
-                // Clear any results
-                document.getElementById('results').innerHTML = '';
-                
-                // Remove any uploaded data from event rows
-                const eventRows = document.querySelectorAll('.event-row');
-                eventRows.forEach(row => {
-                    const timeInputs = row.querySelectorAll('.time-input');
-                    timeInputs.forEach(input => {
-                        input.value = '';
-                    });
-                });
-                
-                showUploadStatus('All data has been cleared successfully', true);
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
