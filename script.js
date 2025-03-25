@@ -1,4 +1,48 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Add search box and clock
+    const headerSection = document.querySelector('header');
+    const searchDiv = document.createElement('div');
+    searchDiv.className = 'search-container';
+    searchDiv.innerHTML = `
+        <div class="search-box">
+            <input type="text" id="swimmer-search" placeholder="Search swimmers...">
+        </div>
+        <div class="clock" id="real-time-clock"></div>
+    `;
+    headerSection.appendChild(searchDiv);
+
+    // Initialize clock
+    function updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('real-time-clock').textContent = timeString;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Initialize search functionality
+    const searchInput = document.getElementById('swimmer-search');
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('tr');
+        
+        rows.forEach(row => {
+            const athleteName = row.querySelector('td:nth-child(3)');
+            if (athleteName) {
+                const name = athleteName.textContent.toLowerCase();
+                if (name.includes(searchTerm) || searchTerm === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    });
+
     // Tab functionality
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -22,36 +66,36 @@ document.addEventListener('DOMContentLoaded', function() {
         day1: {
             morning: [
                 { eventNum: 102, eventName: "Boys 12U 100 freestyle", athletes: [
-                    { name: "Ling Shen Yang 5U", heat: "6", lane: "9" },
-                    { name: "Ayden Koay 4K", heat: "7", lane: "5" },
-                    { name: "Yeoh Li Ze 4H", heat: "5", lane: "7" }
+                    { name: "Ling Shen Yang 5U", heat: "6", lane: "9", seedTime: "1:45.94" },
+                    { name: "Ayden Koay 4K", heat: "7", lane: "5", seedTime: "1:28.10" },
+                    { name: "Yeoh Li Ze 4H", heat: "5", lane: "7", seedTime: "1:54.04" }
                 ]},
                 { eventNum: 103, eventName: "Girls 12U 100 freestyle", athletes: [
-                    { name: "Shavietaa 5M", heat: "5", lane: "0" },
-                    { name: "Lim Ginny Sze Han 5M", heat: "3", lane: "6" },
-                    { name: "Ainatul Dhamia 5K", heat: "8", lane: "8" }
+                    { name: "Shavietaa 5M", heat: "5", lane: "0", seedTime: "1:41.32" },
+                    { name: "Lim Ginny Sze Han 5M", heat: "3", lane: "6", seedTime: "1:59.43" },
+                    { name: "Ainatul Dhamia 5K", heat: "8", lane: "8", seedTime: "1:22.61" }
                 ]},
                 { eventNum: 108, eventName: "Boys 12U 50 fly", athletes: [
-                    { name: "Ling Shen Yang 5U", heat: "6", lane: "7" },
-                    { name: "Ayden Koay 4K", heat: "8", lane: "9" }
+                    { name: "Ling Shen Yang 5U", heat: "6", lane: "7", seedTime: "58.98" },
+                    { name: "Ayden Koay 4K", heat: "8", lane: "9", seedTime: "46.64" }
                 ]},
                 { eventNum: 109, eventName: "Girls 12U 50 fly", athletes: [
-                    { name: "Law Yin Er 6B", heat: "8", lane: "3" },
-                    { name: "Shavietaa 5M", heat: "4", lane: "3" },
-                    { name: "Ammara 3M", heat: "6", lane: "9" }
+                    { name: "Law Yin Er 6B", heat: "8", lane: "3", seedTime: "39.34" },
+                    { name: "Shavietaa 5M", heat: "4", lane: "3", seedTime: "56.39" },
+                    { name: "Ammara 3M", heat: "6", lane: "9", seedTime: "51.49" }
                 ]},
                 { eventNum: 114, eventName: "Mixed 12U 200 Freestyle relay", athletes: ["Relay: Ayden Koay 4K, Lee Jia Kai 4K, Ainatul Dhamia 5K, Law Yin Er 6B"] }
             ],
             afternoon: [
                 { eventNum: 118, eventName: "Boys 12U 100 Breast", athletes: [
-                    { name: "Ayden Koay 4K", heat: "7", lane: "1" },
-                    { name: "Lee Jia Kai 4K", heat: "6", lane: "7" },
-                    { name: "Yeoh Li Ze 4H", heat: "6", lane: "0" }
+                    { name: "Ayden Koay 4K", heat: "7", lane: "1", seedTime: "1:55.16" },
+                    { name: "Lee Jia Kai 4K", heat: "6", lane: "7", seedTime: "2:00.79" },
+                    { name: "Yeoh Li Ze 4H", heat: "6", lane: "0", seedTime: "2:04.82" }
                 ]},
                 { eventNum: 119, eventName: "Girls 12U 100 Breast", athletes: [
-                    { name: "Tan Yun Xin 6K", heat: "2", lane: "7" },
-                    { name: "Ainatul Dhamia 5K", heat: "7", lane: "2" },
-                    { name: "Ammara 3M", heat: "5", lane: "5" }
+                    { name: "Tan Yun Xin 6K", heat: "2", lane: "7", seedTime: "2:35.40" },
+                    { name: "Ainatul Dhamia 5K", heat: "7", lane: "2", seedTime: "1:40.90" },
+                    { name: "Ammara 3M", heat: "5", lane: "5", seedTime: "1:55.21" }
                 ]},
                 { eventNum: 128, eventName: "Mixed 12U Medley Relay", athletes: ["Relay: Ayden Koay 4K, Ainatul Dhamia 5K, Law Yin Er 6B, Lee Jia Kai 4K"] }
             ]
@@ -59,46 +103,49 @@ document.addEventListener('DOMContentLoaded', function() {
         day2: {
             morning: [
                 { eventNum: 202, eventName: "Boys 12U 200IM", athletes: [
-                    { name: "Ling Shen Yang 5U", heat: "2", lane: "5" },
-                    { name: "Ayden Koay 4K", heat: "3", lane: "2" }
+                    { name: "Ayden Koay 4K", heat: "3", lane: "2", seedTime: "3:27.96" },
+                    { name: "Ling Shen Yang 5U", heat: "2", lane: "5", seedTime: "3:56.09" }
                 ]},
                 { eventNum: 203, eventName: "Girls 12U 200IM", athletes: [
-                    { name: "Law Yin Er 6B", heat: "4", lane: "0" },
-                    { name: "Ainatul Dhamia 5K", heat: "2", lane: "8" }
+                    { name: "Law Yin Er 6B", heat: "4", lane: "0", seedTime: "3:10.49" },
+                    { name: "Ammara 3M", heat: "2", lane: "8", seedTime: "3:52.49" },
+                    { name: "Ainatul Dhamia 5K", heat: "4", lane: "9", seedTime: "3:19.37" }
                 ]},
                 { eventNum: 208, eventName: "Boys 12U 50 Breast", athletes: [
-                    { name: "Ling Shen Yang 5U", heat: "17", lane: "0" },
-                    { name: "Lee Jia Kai 4K", heat: "16", lane: "5" },
-                    { name: "Yeoh Li Ze 4H", heat: "15", lane: "8" }
+                    { name: "Ling Shen Yang 5U", heat: "17", lane: "0", seedTime: "52.88" },
+                    { name: "Lee Jia Kai 4K", heat: "16", lane: "5", seedTime: "53.00" },
+                    { name: "Yeoh Li Ze 4H", heat: "15", lane: "8", seedTime: "56.97" }
                 ]},
                 { eventNum: 209, eventName: "Girls 12U 50 Breast", athletes: [
-                    { name: "Shavietaa 5M", heat: "12", lane: "3" },
-                    { name: "Ainatul Dhamia 5K", heat: "17", lane: "8" },
-                    { name: "Bong Rui You 4B", heat: "13", lane: "9" }
+                    { name: "Shavietaa 5M", heat: "12", lane: "3", seedTime: "59.92" },
+                    { name: "Ainatul Dhamia 5K", heat: "17", lane: "8", seedTime: "46.47" },
+                    { name: "Bong Rui You 4B", heat: "13", lane: "9", seedTime: "59.27" }
                 ]},
                 { eventNum: 214, eventName: "Boys 12U 200 freestyle", athletes: [
-                    { name: "Ayden Koay 4K", heat: "3", lane: "7" }
+                    { name: "Ayden Koay 4K", heat: "3", lane: "7", seedTime: "3:08.20" },
+                    { name: "Lee Jia Kai 4K", heat: "1", lane: "3", seedTime: "NT" }
                 ]},
                 { eventNum: 215, eventName: "Girls 12U 200 freestyle", athletes: [
-                    { name: "Law Yin Er 6B", heat: "4", lane: "2" },
-                    { name: "Shavietaa 5M", heat: "1", lane: "6" }
+                    { name: "Shavietaa 5M", heat: "2", lane: "0", seedTime: "3:31.02" },
+                    { name: "Law Yin Er 6B", heat: "4", lane: "2", seedTime: "2:48.46" },
+                    { name: "Lim Ginny Sze Han 5M", heat: "1", lane: "6", seedTime: "NT" }
                 ]}
             ],
             afternoon: [
                 { eventNum: 222, eventName: "Boys 12U 100 butterfly", athletes: [
-                    { name: "Ling Shen Yang 5U", heat: "2", lane: "2" }
+                    { name: "Ling Shen Yang 5U", heat: "2", lane: "2", seedTime: "1:59.73" }
                 ]},
                 { eventNum: 223, eventName: "Girls 12U 100 butterfly", athletes: [
-                    { name: "Law Yin Er 6B", heat: "4", lane: "3" },
-                    { name: "Ainatul Dhamia 5K", heat: "4", lane: "7" }
+                    { name: "Law Yin Er 6B", heat: "4", lane: "3", seedTime: "1:31.47" },
+                    { name: "Ainatul Dhamia 5K", heat: "4", lane: "7", seedTime: "1:41.10" }
                 ]},
                 { eventNum: 228, eventName: "Boys 12U 50 backstroke", athletes: [
-                    { name: "Lee Jia Kai 4K", heat: "7", lane: "5" }
+                    { name: "Lee Jia Kai 4K", heat: "7", lane: "5", seedTime: "50.79" }
                 ]},
                 { eventNum: 229, eventName: "Girls 12U 50 backstroke", athletes: [
-                    { name: "Lim Ginny Sze Han 5M", heat: "4", lane: "6" },
-                    { name: "Tan Yun Xin 6K", heat: "4", lane: "9" },
-                    { name: "Law Yin Er 6B", heat: "9", lane: "7" }
+                    { name: "Lim Ginny Sze Han 5M", heat: "4", lane: "6", seedTime: "1:06.27" },
+                    { name: "Tan Yun Xin 6K", heat: "4", lane: "9", seedTime: "1:11.18" },
+                    { name: "Law Yin Er 6B", heat: "9", lane: "7", seedTime: "44.45" }
                 ]},
                 { eventNum: 234, eventName: "Boys 12U 200 freestyle relay", athletes: ["Relay: Ling Shen Yang 5U, Yeoh Li Ze 4H, Lee Jia Kai 4K, Ayden Koay 4K (Backup: Seoh Yeong Terng 6B)"] },
                 { eventNum: 235, eventName: "Girls 12U 200 freestyle relay", athletes: ["Relay: Ainatul Dhamia 5K, Shavietaa 5M, Ammara 3M, Law Yin Er 6B (Backup: Lim Ginny Sze Han 5M)"] }
@@ -107,20 +154,19 @@ document.addEventListener('DOMContentLoaded', function() {
         day3: {
             morning: [
                 { eventNum: 306, eventName: "Boys 12U 50 freestyle", athletes: [
-                    { name: "Ayden Koay 4K", heat: "17", lane: "7" },
-                    { name: "Lee Jia Kai 4K", heat: "15", lane: "8" }
+                    { name: "Ayden Koay 4K", heat: "17", lane: "7", seedTime: "40.20" },
+                    { name: "Lee Jia Kai 4K", heat: "15", lane: "8", seedTime: "45.81" }
                 ]},
                 { eventNum: 307, eventName: "Girls 12U 50 freestyle", athletes: [
-                    { name: "Shavietaa 5M", heat: "13", lane: "9" },
-                    { name: "Ainatul Dhamia 5K", heat: "11", lane: "7" },
-                    { name: "Bong Rui You 4B", heat: "11", lane: "7" }
+                    { name: "Shavietaa 5M", heat: "13", lane: "9", seedTime: "44.16" },
+                    { name: "Bong Rui You 4B", heat: "11", lane: "7", seedTime: "48.87" }
                 ]},
                 { eventNum: 312, eventName: "Boys 12U 100 backstroke", athletes: [
-                    { name: "Lee Jia Kai 4K", heat: "2", lane: "6" }
+                    { name: "Lee Jia Kai 4K", heat: "2", lane: "6", seedTime: "1:50.47" }
                 ]},
                 { eventNum: 313, eventName: "Girls 12U 100 backstroke", athletes: [
-                    { name: "Law Yin Er 6B", heat: "4", lane: "2" },
-                    { name: "Ammara 3M", heat: "2", lane: "7" }
+                    { name: "Law Yin Er 6B", heat: "4", lane: "2", seedTime: "1:31.36" },
+                    { name: "Ammara 3M", heat: "2", lane: "7", seedTime: "2:06.16" }
                 ]}
             ],
             afternoon: [
@@ -171,6 +217,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 heatLaneInput.type = 'text';
                 heatLaneInput.placeholder = 'H/L';
                 heatLaneInput.classList.add('heat-lane-input');
+                heatLaneInput.readOnly = true;
+                heatLaneInput.value = event.athletes[0].heat + '/' + event.athletes[0].lane;
                 heatLaneCell.appendChild(heatLaneInput);
                 
                 // Entry time for the team
@@ -179,6 +227,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 entryTimeInput.type = 'text';
                 entryTimeInput.placeholder = 'MM:SS.ms';
                 entryTimeInput.classList.add('entry-time-input');
+                entryTimeInput.readOnly = true;
+                entryTimeInput.value = event.athletes[0].seedTime;
                 entryTimeCell.appendChild(entryTimeInput);
                 
                 // Finish time for the team
@@ -187,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 finishTimeInput.type = 'text';
                 finishTimeInput.placeholder = 'MM:SS.ms';
                 finishTimeInput.classList.add('finish-time-input');
+                finishTimeInput.value = event.athletes[0].seedTime;
                 finishTimeCell.appendChild(finishTimeInput);
                 
                 // Actions for the team
@@ -295,7 +346,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     heatLaneInput.type = 'text';
                     heatLaneInput.placeholder = 'H/L';
                     heatLaneInput.classList.add('heat-lane-input');
-                    heatLaneInput.value = `H${athlete.heat}/L${athlete.lane}`; // Pre-fill heat/lane
+                    heatLaneInput.value = `H${athlete.heat}/L${athlete.lane}`;
+                    heatLaneInput.readOnly = true;
                     heatLaneCell.appendChild(heatLaneInput);
                     
                     const entryTimeCell = document.createElement('td');
@@ -303,6 +355,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     entryTimeInput.type = 'text';
                     entryTimeInput.placeholder = 'MM:SS.ms';
                     entryTimeInput.classList.add('entry-time-input');
+                    entryTimeInput.value = athlete.seedTime;
+                    entryTimeInput.readOnly = true;
                     entryTimeCell.appendChild(entryTimeInput);
                     
                     const finishTimeCell = document.createElement('td');
@@ -310,6 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     finishTimeInput.type = 'text';
                     finishTimeInput.placeholder = 'MM:SS.ms';
                     finishTimeInput.classList.add('finish-time-input');
+                    finishTimeInput.value = athlete.seedTime;
                     finishTimeCell.appendChild(finishTimeInput);
                     
                     const actionsCell = document.createElement('td');
