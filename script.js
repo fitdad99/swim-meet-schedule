@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     searchDiv.className = 'search-container';
     searchDiv.innerHTML = `
         <div class="search-box">
-            <input type="text" id="swimmer-search" placeholder="Search swimmers...">
+            <input type="text" id="swimmer-search" placeholder="Search swimmers, events...">
+            <button id="clear-search" class="clear-search-btn">&times;</button>
         </div>
         <div class="clock" id="real-time-clock"></div>
     `;
@@ -24,20 +25,63 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClock();
     setInterval(updateClock, 1000);
 
-    // Initialize search functionality
+    // Initialize search functionality with expanded search
     const searchInput = document.getElementById('swimmer-search');
+    const clearSearchBtn = document.getElementById('clear-search');
+
+    // Clear search function
+    function clearSearch() {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        searchInput.focus();
+    }
+
+    clearSearchBtn.addEventListener('click', clearSearch);
+
+    // Enhanced search functionality
     searchInput.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('tr');
         
         rows.forEach(row => {
+            if (row.classList.contains('relay-swimmer-row')) {
+                // Don't directly hide/show relay swimmer rows - they will be handled by their parent row
+                return;
+            }
+
+            let shouldShow = false;
+            const eventNum = row.querySelector('td:nth-child(1)');
+            const eventName = row.querySelector('td:nth-child(2)');
             const athleteName = row.querySelector('td:nth-child(3)');
-            if (athleteName) {
-                const name = athleteName.textContent.toLowerCase();
-                if (name.includes(searchTerm) || searchTerm === '') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+            
+            if (eventNum && eventName && athleteName) {
+                const eventNumText = eventNum.textContent.toLowerCase();
+                const eventNameText = eventName.textContent.toLowerCase();
+                const athleteNameText = athleteName.textContent.toLowerCase();
+                
+                shouldShow = eventNumText.includes(searchTerm) || 
+                            eventNameText.includes(searchTerm) || 
+                            athleteNameText.includes(searchTerm);
+
+                // Show/hide the main row
+                row.style.display = shouldShow ? '' : 'none';
+
+                // Handle associated relay swimmer rows
+                if (athleteNameText.includes('relay team')) {
+                    let nextRow = row.nextElementSibling;
+                    while (nextRow && nextRow.classList.contains('relay-swimmer-row')) {
+                        // If searching and this swimmer matches, show both the relay team row and this swimmer row
+                        const swimmerText = nextRow.textContent.toLowerCase();
+                        if (searchTerm && swimmerText.includes(searchTerm)) {
+                            row.style.display = '';
+                            nextRow.style.display = '';
+                            shouldShow = true;
+                        } else {
+                            // Show/hide based on the relay team row's visibility
+                            nextRow.style.display = shouldShow ? '' : 'none';
+                        }
+                        nextRow = nextRow.nextElementSibling;
+                    }
                 }
             }
         });
@@ -84,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: "Shavietaa 5M", heat: "4", lane: "3", seedTime: "56.39" },
                     { name: "Ammara 3M", heat: "6", lane: "9", seedTime: "51.49" }
                 ]},
-                { eventNum: 114, eventName: "Mixed 12U 200 Freestyle relay", athletes: ["Relay: Ayden Koay 4K, Lee Jia Kai 4K, Ainatul Dhamia 5K, Law Yin Er 6B"] }
+                { eventNum: 114, eventName: "Mixed 12U 200 Freestyle relay", athletes: ["Relay: Ayden Koay 4K, Lee Jia Kai 4K, Ainatul Dhamia 5K, Law Yin Er 6B"], heat: "3", lane: "1", seedTime: "NT" }
             ],
             afternoon: [
                 { eventNum: 118, eventName: "Boys 12U 100 Breast", athletes: [
@@ -97,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: "Ainatul Dhamia 5K", heat: "7", lane: "2", seedTime: "1:40.90" },
                     { name: "Ammara 3M", heat: "5", lane: "5", seedTime: "1:55.21" }
                 ]},
-                { eventNum: 128, eventName: "Mixed 12U Medley Relay", athletes: ["Relay: Ayden Koay 4K, Ainatul Dhamia 5K, Law Yin Er 6B, Lee Jia Kai 4K"] }
+                { eventNum: 128, eventName: "Mixed 12U Medley Relay", athletes: ["Relay: Ayden Koay 4K, Ainatul Dhamia 5K, Law Yin Er 6B, Lee Jia Kai 4K"], heat: "2", lane: "8", seedTime: "NT" }
             ]
         },
         day2: {
@@ -147,8 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: "Tan Yun Xin 6K", heat: "4", lane: "9", seedTime: "1:11.18" },
                     { name: "Law Yin Er 6B", heat: "9", lane: "7", seedTime: "44.45" }
                 ]},
-                { eventNum: 234, eventName: "Boys 12U 200 freestyle relay", athletes: ["Relay: Ling Shen Yang 5U, Yeoh Li Ze 4H, Lee Jia Kai 4K, Ayden Koay 4K (Backup: Seoh Yeong Terng 6B)"] },
-                { eventNum: 235, eventName: "Girls 12U 200 freestyle relay", athletes: ["Relay: Ainatul Dhamia 5K, Shavietaa 5M, Ammara 3M, Law Yin Er 6B (Backup: Lim Ginny Sze Han 5M)"] }
+                { eventNum: 234, eventName: "Boys 12U 200 freestyle relay", athletes: ["Relay: Ling Shen Yang 5U, Yeoh Li Ze 4H, Lee Jia Kai 4K, Ayden Koay 4K (Backup: Seoh Yeong Terng 6B)"], heat: "2", lane: "9", seedTime: "NT" },
+                { eventNum: 235, eventName: "Girls 12U 200 freestyle relay", athletes: ["Relay: Ainatul Dhamia 5K, Shavietaa 5M, Ammara 3M, Law Yin Er 6B (Backup: Lim Ginny Sze Han 5M)"], heat: "2", lane: "6", seedTime: "NT" }
             ]
         },
         day3: {
@@ -170,8 +214,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 ]}
             ],
             afternoon: [
-                { eventNum: 324, eventName: "Boys 12U 200 Medley Relay", athletes: ["Relay: Lee Jia Kai 4K, Ling Shen Yang 5U, Ayden Koay 4K, Yeoh Li Ze 4H (Backup: Seoh Yeong Terng 6B)"] },
-                { eventNum: 325, eventName: "Girls 12U 200 Medley Relay", athletes: ["Relay: Ainatul Dhamia 5K, Ammara 3M, Law Yin Er 6B, Shavietaa 5M (Backup: Bong Rui You 4B)"] }
+                { eventNum: 324, eventName: "Boys 12U 200 Medley Relay", athletes: ["Relay: Lee Jia Kai 4K, Ling Shen Yang 5U, Ayden Koay 4K, Yeoh Li Ze 4H (Backup: Seoh Yeong Terng 6B)"], heat: "1", lane: "6", seedTime: "NT" },
+                { eventNum: 325, eventName: "Girls 12U 200 Medley Relay", athletes: ["Relay: Ainatul Dhamia 5K, Ammara 3M, Law Yin Er 6B, Shavietaa 5M (Backup: Bong Rui You 4B)"], heat: "2", lane: "6", seedTime: "NT" }
             ]
         }
     };
@@ -218,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 heatLaneInput.placeholder = 'H/L';
                 heatLaneInput.classList.add('heat-lane-input');
                 heatLaneInput.readOnly = true;
-                heatLaneInput.value = event.athletes[0].heat + '/' + event.athletes[0].lane;
+                heatLaneInput.value = `H${event.heat}/L${event.lane}`;
                 heatLaneCell.appendChild(heatLaneInput);
                 
                 // Entry time for the team
@@ -228,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 entryTimeInput.placeholder = 'MM:SS.ms';
                 entryTimeInput.classList.add('entry-time-input');
                 entryTimeInput.readOnly = true;
-                entryTimeInput.value = event.athletes[0].seedTime;
+                entryTimeInput.value = event.seedTime;
                 entryTimeCell.appendChild(entryTimeInput);
                 
                 // Finish time for the team
@@ -237,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 finishTimeInput.type = 'text';
                 finishTimeInput.placeholder = 'MM:SS.ms';
                 finishTimeInput.classList.add('finish-time-input');
-                finishTimeInput.value = event.athletes[0].seedTime;
+                finishTimeInput.value = ''; // Leave finish time blank
                 finishTimeCell.appendChild(finishTimeInput);
                 
                 // Actions for the team
@@ -364,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     finishTimeInput.type = 'text';
                     finishTimeInput.placeholder = 'MM:SS.ms';
                     finishTimeInput.classList.add('finish-time-input');
-                    finishTimeInput.value = athlete.seedTime;
+                    finishTimeInput.value = ''; // Leave finish time blank
                     finishTimeCell.appendChild(finishTimeInput);
                     
                     const actionsCell = document.createElement('td');

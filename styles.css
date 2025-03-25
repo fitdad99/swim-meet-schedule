@@ -172,20 +172,58 @@ footer {
 
 /* Relay Swimmer Rows */
 .relay-swimmer-row {
-    background-color: #f0f7ff;
+    background-color: #f0f7ff !important;
 }
 
 .relay-swimmer-row td {
-    padding: 8px 15px 8px 30px;
-    font-size: 0.95em;
-    color: #444;
-    border-bottom: 1px dashed #ddd;
+    font-family: 'Arial', sans-serif !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    color: #333 !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+    line-height: 1.4 !important;
+    font-style: normal !important;
 }
 
-/* Style for backup swimmer */
 .relay-swimmer-row:last-child td {
-    font-style: italic;
-    color: #666;
+    font-style: normal !important;
+    color: #333 !important;
+    background-color: #f0f7ff !important;
+}
+
+.relay-swimmer-row td[colspan] {
+    padding-left: 30px !important;
+}
+
+/* Mobile adjustments */
+@media screen and (max-width: 768px) {
+    .search-box input {
+        width: 180px;
+    }
+    
+    .relay-swimmer-row td {
+        font-size: 13px !important;
+        padding: 6px 10px !important;
+    }
+    
+    .relay-swimmer-row td[colspan] {
+        padding-left: 20px !important;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .search-box input {
+        width: 150px;
+    }
+    
+    .relay-swimmer-row td {
+        font-size: 12px !important;
+        padding: 5px 8px !important;
+    }
+    
+    .relay-swimmer-row td[colspan] {
+        padding-left: 15px !important;
+    }
 }
 
 /* Media Queries for Relay Swimmers */
@@ -260,12 +298,34 @@ footer {
     margin-bottom: 20px;
 }
 
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .search-box input {
-    padding: 8px 12px;
+    padding: 8px 32px 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
     width: 200px;
     font-size: 14px;
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #666;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+.clear-search-btn:hover {
+    color: #333;
 }
 
 .clock {
