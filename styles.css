@@ -131,14 +131,20 @@ input[type="text"] {
     font-size: 14px;
 }
 
+/* Button styles */
 .btn {
     background-color: #005792;
     color: white;
     border: none;
-    padding: 8px 15px;
+    margin: 0 3px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
     transition: background-color 0.3s;
 }
 
@@ -146,6 +152,11 @@ input[type="text"] {
     background-color: #004072;
 }
 
+.btn i {
+    font-size: 16px;
+}
+
+/* Save button styling */
 .save-btn {
     background-color: #28a745;
 }
@@ -410,5 +421,110 @@ table {
     
     .relay-swimmer-row td {
         font-size: 12px !important;
+    }
+}
+
+/* Stopwatch button styles */
+.stopwatch-btn {
+    background-color: #0275d8;
+    margin-left: 5px;
+    min-width: 50px;
+}
+
+.stopwatch-btn.running {
+    background-color: #d9534f;
+}
+
+.stopwatch-btn:hover {
+    background-color: #0267bf;
+}
+
+.stopwatch-btn.running:hover {
+    background-color: #c9302c;
+}
+
+/* Adjust finish time cell to accommodate stopwatch button */
+.finish-time-input {
+    width: calc(100% - 60px) !important;
+    display: inline-block;
+}
+
+/* Mobile adjustments for stopwatch */
+@media screen and (max-width: 768px) {
+    .stopwatch-btn {
+        min-width: 40px;
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .finish-time-input {
+        width: calc(100% - 50px) !important;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .stopwatch-btn {
+        min-width: 36px;
+        padding: 4px 6px;
+        font-size: 11px;
+    }
+    
+    .finish-time-input {
+        width: calc(100% - 42px) !important;
+    }
+}
+
+/* Stopwatch and Save Button Styles */
+.btn {
+    margin: 0 3px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn i {
+    font-size: 16px;
+}
+
+/* Adjust finish time input for full width */
+.finish-time-input {
+    width: 100% !important;
+}
+
+/* Time difference colors */
+.time-diff-cell.improvement {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.time-diff-cell.slower {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Mobile adjustments for icon buttons */
+@media screen and (max-width: 768px) {
+    .btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .btn i {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .btn {
+        width: 28px;
+        height: 28px;
+        margin: 0 2px;
+    }
+    
+    .btn i {
+        font-size: 12px;
     }
 } 

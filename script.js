@@ -286,13 +286,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Actions for the team
                 const actionsCell = document.createElement('td');
+                // Create save button with icon
                 const saveButton = document.createElement('button');
-                saveButton.textContent = 'Save';
+                saveButton.innerHTML = '<i class="fas fa-save"></i>';
+                saveButton.title = 'Save';
                 saveButton.classList.add('btn', 'save-btn');
                 saveButton.addEventListener('click', function() {
                     saveResult(row);
                 });
                 actionsCell.appendChild(saveButton);
+                
+                // Create stopwatch button with icon and move it next to save button
+                const stopwatchButton = createStopwatch(finishTimeInput);
+                actionsCell.appendChild(stopwatchButton);
                 
                 // Append cells to main row
                 row.appendChild(eventNumCell);
@@ -412,13 +418,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     finishTimeCell.appendChild(finishTimeInput);
                     
                     const actionsCell = document.createElement('td');
+                    // Create save button with icon
                     const saveButton = document.createElement('button');
-                    saveButton.textContent = 'Save';
+                    saveButton.innerHTML = '<i class="fas fa-save"></i>';
+                    saveButton.title = 'Save';
                     saveButton.classList.add('btn', 'save-btn');
                     saveButton.addEventListener('click', function() {
                         saveResult(row);
                     });
                     actionsCell.appendChild(saveButton);
+                    
+                    // Create stopwatch button with icon and add it to actions cell
+                    const stopwatchButton = createStopwatch(finishTimeInput);
+                    actionsCell.appendChild(stopwatchButton);
                     
                     // Append cells to row
                     row.appendChild(eventNumCell);
@@ -454,8 +466,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Calculate time difference
+        // Calculate time difference and determine color
         const timeDiff = calculateTimeDifference(entryTime, finishTime);
+        const isImprovement = timeDiff.startsWith('-');
         
         // Check if result already exists for this athlete and event
         const resultsTable = document.getElementById('results-table');
@@ -481,7 +494,15 @@ document.addEventListener('DOMContentLoaded', function() {
             existingRow.querySelector('.heat-lane-cell').textContent = heatLane;
             existingRow.querySelector('.entry-time-cell').textContent = entryTime;
             existingRow.querySelector('.finish-time-cell').textContent = finishTime;
-            existingRow.querySelector('.time-diff-cell').textContent = timeDiff;
+            
+            const timeDiffCell = existingRow.querySelector('.time-diff-cell');
+            timeDiffCell.textContent = timeDiff;
+            timeDiffCell.className = 'time-diff-cell'; // Reset classes
+            if (isImprovement) {
+                timeDiffCell.classList.add('improvement');
+            } else if (timeDiff !== 'N/A' && timeDiff !== 'Invalid Time' && timeDiff !== 'Error') {
+                timeDiffCell.classList.add('slower');
+            }
         } else {
             // Create new row
             const resultRow = document.createElement('tr');
@@ -512,6 +533,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const timeDiffCell = document.createElement('td');
             timeDiffCell.textContent = timeDiff;
             timeDiffCell.classList.add('time-diff-cell');
+            if (isImprovement) {
+                timeDiffCell.classList.add('improvement');
+            } else if (timeDiff !== 'N/A' && timeDiff !== 'Invalid Time' && timeDiff !== 'Error') {
+                timeDiffCell.classList.add('slower');
+            }
             
             resultRow.appendChild(eventNumCell);
             resultRow.appendChild(eventNameCell);
@@ -703,5 +729,54 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    // Add stopwatch functionality 
+    function createStopwatch(finishTimeInput) {
+        let startTime;
+        let timerInterval;
+        let isRunning = false;
+        
+        const stopwatchButton = document.createElement('button');
+        stopwatchButton.innerHTML = '<i class="fas fa-stopwatch"></i>';
+        stopwatchButton.title = 'Start Timing';
+        stopwatchButton.classList.add('btn', 'stopwatch-btn');
+        
+        stopwatchButton.addEventListener('click', function() {
+            if (!isRunning) {
+                // Start the stopwatch
+                startTime = Date.now();
+                isRunning = true;
+                stopwatchButton.classList.add('running');
+                stopwatchButton.title = 'Stop Timing';
+                
+                // Update the display every 10ms
+                timerInterval = setInterval(function() {
+                    const elapsedMs = Date.now() - startTime;
+                    const formattedTime = formatStopwatchTime(elapsedMs);
+                    finishTimeInput.value = formattedTime;
+                }, 10);
+            } else {
+                // Stop the stopwatch
+                clearInterval(timerInterval);
+                isRunning = false;
+                stopwatchButton.classList.remove('running');
+                stopwatchButton.title = 'Start Timing';
+            }
+        });
+        
+        return stopwatchButton;
+    }
+
+    function formatStopwatchTime(ms) {
+        const minutes = Math.floor(ms / 60000);
+        const seconds = Math.floor((ms % 60000) / 1000);
+        const milliseconds = Math.floor((ms % 1000) / 10);
+        
+        if (minutes > 0) {
+            return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+        } else {
+            return `${seconds}.${milliseconds.toString().padStart(2, '0')}`;
+        }
     }
 }); 
