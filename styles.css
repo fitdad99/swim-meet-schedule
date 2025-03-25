@@ -170,7 +170,25 @@ footer {
     margin-top: 40px;
 }
 
-/* Responsive Adjustments */
+/* Relay Swimmer Rows */
+.relay-swimmer-row {
+    background-color: #f0f7ff;
+}
+
+.relay-swimmer-row td {
+    padding: 8px 15px 8px 30px;
+    font-size: 0.95em;
+    color: #444;
+    border-bottom: 1px dashed #ddd;
+}
+
+/* Style for backup swimmer */
+.relay-swimmer-row:last-child td {
+    font-style: italic;
+    color: #666;
+}
+
+/* Media Queries for Relay Swimmers */
 @media (max-width: 768px) {
     header h1 {
         font-size: 1.8rem;
@@ -185,6 +203,11 @@ footer {
     .event-table td {
         padding: 8px 10px;
         font-size: 14px;
+    }
+
+    .relay-swimmer-row td {
+        padding: 6px 10px 6px 20px;
+        font-size: 0.9em;
     }
 }
 
@@ -219,5 +242,10 @@ footer {
     .event-table th:nth-child(4),
     .event-table td:nth-child(4) {
         display: none;
+    }
+
+    .relay-swimmer-row td {
+        padding: 5px 8px 5px 15px;
+        font-size: 0.85em;
     }
 } 
