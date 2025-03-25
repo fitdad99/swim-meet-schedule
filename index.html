@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>MSSPP 2025 Swim Meet Schedule</title>
     <style>
         * {
@@ -103,7 +106,14 @@
         }
         
         .athlete-list li {
-            padding: 4px 0;
+            padding: 6px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .athlete-name {
+            flex: 1;
         }
         
         .relay-list {
@@ -157,6 +167,128 @@
             display: none;
         }
         
+        .athlete-time-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .athlete-time-input input {
+            width: 80px;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        .results-container {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .results-container h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #004080;
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .results-container p {
+            margin-bottom: 5px;
+        }
+        
+        .display-results-button {
+            padding: 10px 20px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 20px 0;
+        }
+        
+        .display-results-button:hover {
+            background-color: #002040;
+        }
+        
+        .heat-lane-info {
+            display: flex;
+            gap: 10px;
+            margin-left: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .heat-lane-tag {
+            background-color: #0066cc;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        
+        .seed-time-tag {
+            background-color: #004080;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        
+        .athlete-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .info-container {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .improvement {
+            color: green;
+            font-weight: bold;
+        }
+        
+        .slower {
+            color: red;
+        }
+        
+        .unchanged {
+            color: #666;
+        }
+
+        /* New styles for the combined athlete rows */
+        .athlete-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .athlete-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .athlete-name {
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .athlete-details {
+            flex: 2;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        
         @media screen and (max-width: 768px) {
             .event-table {
                 font-size: 0.9rem;
@@ -180,6 +312,40 @@
             
             .filter-buttons {
                 flex-direction: column;
+            }
+            
+            .heat-lane-info {
+                display: block;
+                margin-top: 3px;
+                margin-left: 0;
+            }
+            
+            .heat-lane-tag, .seed-time-tag {
+                display: inline-block;
+                margin-right: 5px;
+                margin-bottom: 3px;
+            }
+            
+            .athlete-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .info-container {
+                margin-top: 5px;
+            }
+
+            .athlete-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .athlete-name {
+                margin-bottom: 5px;
+            }
+
+            .athlete-details {
+                justify-content: flex-start;
             }
         }
         
@@ -213,13 +379,237 @@
                 padding: 10px;
             }
         }
+
+        /* Add new styles for CSV upload */
+        .csv-upload {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .csv-upload input[type="file"] {
+            margin: 10px 0;
+        }
+
+        .upload-button {
+            padding: 8px 15px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .upload-button:hover {
+            background-color: #004080;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Admin Panel Styles */
+        .admin-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .admin-button {
+            padding: 8px 15px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .admin-button:hover {
+            background-color: #004080;
+        }
+
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1001;
+        }
+
+        .admin-modal-content {
+            position: relative;
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .admin-modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .admin-form-group {
+            margin-bottom: 15px;
+        }
+
+        .admin-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .admin-form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .admin-form-group input[type="password"] {
+            font-family: monospace;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .admin-button {
+            flex: 1;
+        }
+
+        /* Upload Status Styles */
+        .upload-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .upload-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .upload-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Header Customization Styles */
+        .header-customization {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .header-customization input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Date and Time Display */
+        .datetime-display {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            color: #003366;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <div class="admin-panel">
+        <button onclick="toggleAdminPanel()" class="admin-button" id="adminButton">Admin Panel</button>
+    </div>
+
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h3>Admin Panel</h3>
+                <span class="admin-modal-close" onclick="toggleAdminPanel()">&times;</span>
+            </div>
+            <div id="loginForm">
+                <div class="admin-form-group">
+                    <label for="adminUsername">Username:</label>
+                    <input type="text" id="adminUsername" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="adminPassword">Password:</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <div class="admin-actions">
+                    <button onclick="adminLogin()" class="admin-button">Admin Panel</button>
+                </div>
+            </div>
+            <div id="adminControls" style="display: none;">
+                <div class="header-customization">
+                    <h4>Header Customization</h4>
+                    <input type="text" id="teamName" placeholder="Team Name">
+                    <input type="text" id="meetName" placeholder="Meet Name">
+                    <input type="text" id="meetDate" placeholder="Meet Date">
+                    <input type="text" id="meetLocation" placeholder="Meet Location">
+                </div>
+                <div class="admin-form-group">
+                    <label for="newPassword">New Password:</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password">
+                </div>
+                <div class="admin-actions">
+                    <button onclick="updateHeaders()" class="admin-button">Update Headers</button>
+                    <button onclick="changePassword()" class="admin-button">Change Password</button>
+                    <button onclick="clearAllData()" class="admin-button">Clear All Data</button>
+                    <button onclick="adminLogout()" class="admin-button">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="header">
-        <h1>Keong Hoe Swim Team 2025</h1>
-        <h2>MSSPP 2025</h2>
-        <p>April 7-9, 2025</p>
+        <h1 id="teamNameHeader">Keong Hoe Swim Team 2025</h1>
+        <h2 id="meetNameHeader">MSSPP 2025</h2>
+        <p id="meetDateHeader">April 7-9, 2025</p>
+        <p id="meetLocationHeader">Penang Swimming Club</p>
+    </div>
+
+    <div class="datetime-display" id="currentDateTime"></div>
+
+    <div class="csv-upload" id="csvUploadSection" style="display: none;">
+        <h3>Upload Swimmers Data</h3>
+        <p>Upload a CSV file with the following columns: Day, Session, Event#, EventName, AthleteNames, Heat, Lane, SeedTime</p>
+        <input type="file" id="csvFile" accept=".csv">
+        <button onclick="handleFileUpload()" class="upload-button">Upload CSV</button>
+        <div id="uploadStatus" class="upload-status"></div>
     </div>
     
     <div class="filter-section">
@@ -248,7 +638,8 @@
             <tr>
                 <th>Event #</th>
                 <th>Event Name</th>
-                <th>Athletes</th>
+                <th>Athletes & Heat/Lane Information</th>
+                <th>Finishing Time</th>
             </tr>
         </thead>
         <tbody>
@@ -256,375 +647,391 @@
                 <td>102</td>
                 <td>Boys 12U 100 Freestyle</td>
                 <td>
-                    <ul class="athlete-list">
-                        <li>Ling Shen Yang (5U)</li>
-                        <li>Ayden Koay (4K)</li>
-                        <li>Yeoh Li Ze (4H)</li>
-                    </ul>
+                    <div class="athlete-row">
+                        <div class="athlete-name">Ling Shen Yang (5U)</div>
+                        <div class="athlete-details">
+                            <span class="heat-lane-tag">Heat 1</span>
+                            <span class="heat-lane-tag">Lane 4</span>
+                            <span class="seed-time-tag" id="seed-Ling-Shen-Yang">Seed: 1:12.45</span>
+                        </div>
+                    </div>
+                    <div class="athlete-row">
+                        <div class="athlete-name">Ayden Koay (4K)</div>
+                        <div class="athlete-details">
+                            <span class="heat-lane-tag">Heat 2</span>
+                            <span class="heat-lane-tag">Lane 3</span>
+                            <span class="seed-time-tag" id="seed-Ayden-Koay">Seed: 1:15.67</span>
+                        </div>
+                    </div>
+                    <div class="athlete-row">
+                        <div class="athlete-name">Yeoh Li Ze (4H)</div>
+                        <div class="athlete-details">
+                            <span class="heat-lane-tag">Heat 3</span>
+                            <span class="heat-lane-tag">Lane 5</span>
+                            <span class="seed-time-tag" id="seed-Yeoh-Li-Ze">Seed: 1:18.23</span>
+                        </div>
+                    </div>
                 </td>
-            </tr>
-            <tr class="event-row" data-athletes="Shavietaa,Lim Ginny Sze Han,Ainatul Dhamia">
-                <td>103</td>
-                <td>Girls 12U 100 Freestyle</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Shavietaa (5M)</li>
-                        <li>Lim Ginny Sze Han (5M)</li>
-                        <li>Ainatul Dhamia (5K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Ling Shen Yang,Ayden Koay">
-                <td>108</td>
-                <td>Boys 12U 50 Fly</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Ling Shen Yang (5U)</li>
-                        <li>Ayden Koay (4K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Law Yin Er,Shavietaa,Ammara">
-                <td>109</td>
-                <td>Girls 12U 50 Fly</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Law Yin Er (6B)</li>
-                        <li>Shavietaa (5M)</li>
-                        <li>Ammara (3M)</li>
-                    </ul>
+                <td class="athlete-time-input">
+                    <input type="text" class="time-input" data-athlete="Ling Shen Yang" data-heat="1" data-lane="4" data-seed="1:12.45">
+                    <input type="text" class="time-input" data-athlete="Ayden Koay" data-heat="2" data-lane="3" data-seed="1:15.67">
+                    <input type="text" class="time-input" data-athlete="Yeoh Li Ze" data-heat="3" data-lane="5" data-seed="1:18.23">
                 </td>
             </tr>
             <tr class="event-row" data-athletes="Ayden Koay,Lee Jia Kai,Ainatul Dhamia,Law Yin Er">
                 <td>114</td>
                 <td>Mixed 12U 200 Freestyle Relay</td>
                 <td>
-                    <ol class="relay-list">
-                        <li>Ayden Koay (4K)</li>
-                        <li>Lee Jia Kai (4K)</li>
-                        <li>Ainatul Dhamia (5K)</li>
-                        <li>Law Yin Er (6B)</li>
-                    </ol>
+                    <div class="athlete-row">
+                        <div class="athlete-name">
+                            <ol class="relay-list">
+                                <li>Ayden Koay (4K)</li>
+                                <li>Lee Jia Kai (4K)</li>
+                                <li>Ainatul Dhamia (5K)</li>
+                                <li>Law Yin Er (6B)</li>
+                            </ol>
+                        </div>
+                        <div class="athlete-details">
+                            <span class="heat-lane-tag">Heat 1</span>
+                            <span class="heat-lane-tag">Lane 4</span>
+                            <span class="seed-time-tag" id="seed-Team-Relay">Seed: 2:05.34</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="athlete-time-input">
+                    <input type="text" class="time-input" data-athlete="Team Relay" data-heat="1" data-lane="4" data-seed="2:05.34">
                 </td>
             </tr>
         </tbody>
     </table>
+    <button onclick="displayResults()" class="display-results-button">Show Results</button>
+    <div class="results-container" id="results"></div>
     
-    <div class="session-header day-1">
-        <h4>Afternoon Session - Starting at 2:00 PM</h4>
+    <div class="copyright">
+        © 2024 Koay Ween Ching. All rights reserved.
     </div>
-    
-    <table class="event-table day-1">
-        <thead>
-            <tr>
-                <th>Event #</th>
-                <th>Event Name</th>
-                <th>Athletes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="event-row" data-athletes="Ayden Koay,Lee Jia Kai,Yeoh Li Ze">
-                <td>118</td>
-                <td>Boys 12U 100 Breast</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Ayden Koay (4K)</li>
-                        <li>Lee Jia Kai (4K)</li>
-                        <li>Yeoh Li Ze (4H)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Tan Yun Xin,Ainatul Dhamia,Ammara">
-                <td>119</td>
-                <td>Girls 12U 100 Breast</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Tan Yun Xin (6K)</li>
-                        <li>Ainatul Dhamia (5K)</li>
-                        <li>Ammara (3M)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Ayden Koay,Ainatul Dhamia,Law Yin Er, Lee Jia Kai">
-                <td>128</td>
-                <td>Mixed 12U Medley Relay</td>
-                <td>
-                    <ol class="relay-list">
-                        <li>Ayden Koay (4K)</li>
-                        <li>Ainatul Dhamia (5K)</li>
-                        <li>Law Yin Er (6B)</li>
-                        <li>Lee Jia Kai (4K)</li>
-                    </ol>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div class="day-header day-2">
-        <h3>Day 2 - Tuesday, April 8, 2025</h3>
-    </div>
-    
-    <div class="session-header day-2">
-        <h4>Morning Session - Starting at 8:00 AM</h4>
-    </div>
-    
-    <table class="event-table day-2">
-        <thead>
-            <tr>
-                <th>Event #</th>
-                <th>Event Name</th>
-                <th>Athletes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="event-row" data-athletes="Ling Shen Yang,Ayden Koay">
-                <td>202</td>
-                <td>Boys 12U 200 IM</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Ling Shen Yang (5U)</li>
-                        <li>Ayden Koay (4K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Law Yin Er,Ainatul Dhamia">
-                <td>203</td>
-                <td>Girls 12U 200 IM</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Law Yin Er (6B)</li>
-                        <li>Ainatul Dhamia (5K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Ling Shen Yang,Lee Jia Kai,Yeoh Li Ze">
-                <td>208</td>
-                <td>Boys 12U 50 Breast</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Ling Shen Yang (5U)</li>
-                        <li>Lee Jia Kai (4K)</li>
-                        <li>Yeoh Li Ze (4H)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Shavietaa,Ainatul Dhamia,Bong Rui You">
-                <td>209</td>
-                <td>Girls 12U 50 Breast</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Shavietaa (5M)</li>
-                        <li>Ainatul Dhamia (5K)</li>
-                        <li>Bong Rui You (4B)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Ayden Koay">
-                <td>214</td>
-                <td>Boys 12U 200 Freestyle</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Ayden Koay (4K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Law Yin Er,Shavietaa">
-                <td>215</td>
-                <td>Girls 12U 200 Freestyle</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Law Yin Er (6B)</li>
-                        <li>Shavietaa (5M)</li>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div class="session-header day-2">
-        <h4>Afternoon Session - Starting at 2:00 PM</h4>
-    </div>
-    
-    <table class="event-table day-2">
-        <thead>
-            <tr>
-                <th>Event #</th>
-                <th>Event Name</th>
-                <th>Athletes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="event-row" data-athletes="Ling Shen Yang">
-                <td>222</td>
-                <td>Boys 12U 100 Butterfly</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Ling Shen Yang (5U)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Law Yin Er,Ainatul Dhamia">
-                <td>223</td>
-                <td>Girls 12U 100 Butterfly</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Law Yin Er (6B)</li>
-                        <li>Ainatul Dhamia (5K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Lee Jia Kai">
-                <td>228</td>
-                <td>Boys 12U 50 Backstroke</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Lee Jia Kai (4K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Lim Ginny Sze Han,Tan Yun Xin,Law Yin Er">
-                <td>229</td>
-                <td>Girls 12U 50 Backstroke</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Lim Ginny Sze Han (5M)</li>
-                        <li>Tan Yun Xin (6K)</li>
-                        <li>Law Yin Er (6B)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Seoh Yeong Terng,Yeoh Li Ze,Lee Jia Kai,Ayden Koay,Ling Shen Yang">
-                <td>234</td>
-                <td>Boys 12U 200 Freestyle Relay</td>
-                <td>
-                    <ol class="relay-list">
-                        <li>Ling Shen Yang (5U)</li>
-                        <li>Yeoh Li Ze (4H)</li>
-                        <li>Lee Jia Kai (4K)</li>
-                        <li>Ayden Koay (4K)</li>
-                        <li>Seoh Yeong Terng (6B) Backup</li>
-                    </ol>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Ainatul Dhamia,Shavietaa,Ammara,Law Yin Er,Lim Ginny Sze Han">
-                <td>235</td>
-                <td>Girls 12U 200 Freestyle Relay</td>
-                <td>
-                    <ol class="relay-list">
-                        <li>Ainatul Dhamia (5K)</li>
-                        <li>Shavietaa (5M)</li>
-                        <li>Ammara (3M)</li>
-                        <li>Law Yin Er (6B)</li>
-                        <li>Lim Ginny Sze Han (5M) Backup</li>
-                    </ol>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div class="day-header day-3">
-        <h3>Day 3 - Wednesday, April 9, 2025</h3>
-    </div>
-    
-    <div class="session-header day-3">
-        <h4>Morning Session - Starting at 8:00 AM</h4>
-    </div>
-    
-    <table class="event-table day-3">
-        <thead>
-            <tr>
-                <th>Event #</th>
-                <th>Event Name</th>
-                <th>Athletes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="event-row" data-athletes="Ayden Koay,Lee Jia Kai">
-                <td>306</td>
-                <td>Boys 12U 50 Freestyle</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Ayden Koay (4K)</li>
-                        <li>Lee Jia Kai (4K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Shavietaa,Ainatul Dhamia,Bong Rui You">
-                <td>307</td>
-                <td>Girls 12U 50 Freestyle</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Shavietaa (5M)</li>
-                        <li>Ainatul Dhamia (5K)</li>
-                        <li>Bong Rui You (4B)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Lee Jia Kai">
-                <td>312</td>
-                <td>Boys 12U 100 Backstroke</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Lee Jia Kai (4K)</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Law Yin Er,Ammara">
-                <td>313</td>
-                <td>Girls 12U 100 Backstroke</td>
-                <td>
-                    <ul class="athlete-list">
-                        <li>Law Yin Er (6B)</li>
-                        <li>Ammara (3M)</li>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div class="session-header day-3">
-        <h4>Afternoon Session - Starting at 2:00 PM</h4>
-    </div>
-    
-    <table class="event-table day-3">
-        <thead>
-            <tr>
-                <th>Event #</th>
-                <th>Event Name</th>
-                <th>Athletes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="event-row" data-athletes="Seoh Yeong Terng,Ling Shen Yang,Ayden Koay,Lee Jia Kai,Yeoh Li Ze">
-                <td>324</td>
-                <td>Boys 12U 200 Medley Relay</td>
-                <td>
-                    <ol class="relay-list">
-                        <li>Lee Jia Kai (4K)</li>
-                        <li>Ling Shen Yang (5U)</li>
-                        <li>Ayden Koay (4K)</li>
-                        <li>Yeoh Li Ze (4H)</li>
-                        <li>Seoh Yeong Terng (6B) Backup</li>
-                    </ol>
-                </td>
-            </tr>
-            <tr class="event-row" data-athletes="Ainatul Dhamia,Ammara,Law Yin Er,Shavietaa,Bong Rui You">
-                <td>325</td>
-                <td>Girls 12U 200 Medley Relay</td>
-                <td>
-                    <ol class="relay-list">
-                        <li>Ainatul Dhamia (5K)</li>
-                        <li>Ammara (3M)</li>
-                        <li>Law Yin Er (6B)</li>
-                        <li>Shavietaa (5M)</li>
-                        <li>Bong Rui You (4B) Backup</li>
-                    </ol>
-                </td>
-            </tr>
-        </tbody>
-    </table>
     
     <script>
+        // Admin functionality
+        let isAdmin = false;
+        const ADMIN_USERNAME = 'admin';
+        let ADMIN_PASSWORD = '9e4c2e640e661edcdc9d4af7d3c535c5c5dfcc4c522c512a300719fc4f181ef9'; // admin123 in SHA256
+
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        function toggleAdminPanel() {
+            const modal = document.getElementById('adminModal');
+            modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function adminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const hashedPassword = await sha256(password);
+
+            if (username === ADMIN_USERNAME && hashedPassword === ADMIN_PASSWORD) {
+                isAdmin = true;
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminControls').style.display = 'block';
+                document.getElementById('csvUploadSection').style.display = 'block';
+                document.getElementById('adminButton').textContent = 'Admin Panel';
+                // Enable all time inputs
+                document.querySelectorAll('.time-input').forEach(input => {
+                    input.disabled = false;
+                });
+                toggleAdminPanel();
+            } else {
+                alert('Invalid credentials');
+            }
+        }
+
+        function adminLogout() {
+            isAdmin = false;
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminControls').style.display = 'none';
+            document.getElementById('csvUploadSection').style.display = 'none';
+            document.getElementById('adminButton').textContent = 'Admin Panel';
+            // Disable all time inputs
+            document.querySelectorAll('.time-input').forEach(input => {
+                input.disabled = true;
+            });
+            toggleAdminPanel();
+        }
+
+        async function changePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            if (!newPassword) {
+                alert('Please enter a new password');
+                return;
+            }
+            if (newPassword.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
+            if (!/[A-Z]/.test(newPassword)) {
+                alert('Password must contain at least one uppercase letter');
+                return;
+            }
+            if (!/[a-z]/.test(newPassword)) {
+                alert('Password must contain at least one lowercase letter');
+                return;
+            }
+            if (!/[0-9]/.test(newPassword)) {
+                alert('Password must contain at least one number');
+                return;
+            }
+            
+            try {
+                ADMIN_PASSWORD = await sha256(newPassword);
+                alert('Password updated successfully');
+                document.getElementById('newPassword').value = '';
+            } catch (error) {
+                alert('Error updating password: ' + error.message);
+            }
+        }
+
+        function updateHeaders() {
+            document.getElementById('teamNameHeader').textContent = document.getElementById('teamName').value;
+            document.getElementById('meetNameHeader').textContent = document.getElementById('meetName').value;
+            document.getElementById('meetDateHeader').textContent = document.getElementById('meetDate').value;
+            document.getElementById('meetLocationHeader').textContent = document.getElementById('meetLocation').value;
+        }
+
+        // DateTime display
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // Dynamic copyright year
+        document.querySelector('.copyright').innerHTML = `© ${new Date().getFullYear()} Koay Ween Ching. All rights reserved.`;
+
+        // Improved CSV upload functionality
+        function handleFileUpload() {
+            if (!isAdmin) {
+                alert('Please login as admin to upload CSV');
+                return;
+            }
+
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showUploadStatus('Please select a file', false);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const csvData = parseCSV(e.target.result);
+                    if (!document.getElementById('eventContent')) {
+                        // Create eventContent div if it doesn't exist
+                        const contentDiv = document.createElement('div');
+                        contentDiv.id = 'eventContent';
+                        // Insert before the results button
+                        const resultsButton = document.querySelector('.display-results-button');
+                        resultsButton.parentNode.insertBefore(contentDiv, resultsButton);
+                    }
+                    generateEventContent(csvData);
+                    showUploadStatus('CSV uploaded successfully', true);
+                    fileInput.value = ''; // Clear the file input
+                    
+                    // Disable time inputs for non-admin users
+                    if (!isAdmin) {
+                        document.querySelectorAll('.time-input').forEach(input => {
+                            input.disabled = true;
+                        });
+                    }
+                } catch (error) {
+                    showUploadStatus('Error processing CSV: ' + error.message, false);
+                }
+            };
+
+            reader.onerror = function() {
+                showUploadStatus('Error reading file', false);
+            };
+
+            reader.readAsText(file);
+        }
+
+        function showUploadStatus(message, isSuccess) {
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.textContent = message;
+            statusDiv.className = 'upload-status ' + (isSuccess ? 'upload-success' : 'upload-error');
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Improved time difference calculation
+        function compareTime(time1, time2) {
+            function timeToSeconds(timeStr) {
+                const parts = timeStr.split(':');
+                let minutes = 0;
+                let seconds = 0;
+                
+                if (parts.length === 2) {
+                    minutes = parseFloat(parts[0]);
+                    seconds = parseFloat(parts[1]);
+                } else {
+                    seconds = parseFloat(parts[0]);
+                }
+                
+                return (minutes * 60) + seconds;
+            }
+            
+            const t1Seconds = timeToSeconds(time1);
+            const t2Seconds = timeToSeconds(time2);
+            
+            if (isNaN(t1Seconds) || isNaN(t2Seconds)) {
+                throw new Error('Invalid time format');
+            }
+            
+            return t1Seconds - t2Seconds;
+        }
+
+        // Function to parse CSV data
+        function parseCSV(csv) {
+            try {
+                const lines = csv.split('\n');
+                const headers = lines[0].split(',').map(h => h.trim());
+                const data = [];
+                
+                // Check if all required headers exist
+                const requiredHeaders = ['Day', 'Session', 'Event#', 'EventName', 'AthleteNames', 'Heat', 'Lane', 'SeedTime'];
+                for (let header of requiredHeaders) {
+                    if (!headers.includes(header)) {
+                        throw new Error(`Missing required header: ${header}`);
+                    }
+                }
+                
+                for(let i = 1; i < lines.length; i++) {
+                    if(!lines[i].trim()) continue;
+                    const values = lines[i].split(',').map(v => v.trim());
+                    const row = {};
+                    
+                    // Check if row has enough values
+                    if (values.length < headers.length) {
+                        throw new Error(`Row ${i} has fewer columns than expected`);
+                    }
+                    
+                    headers.forEach((header, index) => {
+                        row[header] = values[index] || '';
+                        
+                        // Validate that required fields have values
+                        if (requiredHeaders.includes(header) && !row[header]) {
+                            throw new Error(`Row ${i} is missing value for ${header}`);
+                        }
+                    });
+                    data.push(row);
+                }
+                return data;
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        }
+
+        // Function to generate event content from CSV data
+        function generateEventContent(data) {
+            const contentDiv = document.getElementById('eventContent');
+            contentDiv.innerHTML = '';
+            
+            let currentDay = '';
+            let currentSession = '';
+            
+            data.forEach(row => {
+                if (row.Day !== currentDay) {
+                    currentDay = row.Day;
+                    contentDiv.innerHTML += `
+                        <div class="day-header day-${currentDay}">
+                            <h3>Day ${currentDay}</h3>
+                        </div>
+                    `;
+                }
+                
+                if (row.Session !== currentSession) {
+                    currentSession = row.Session;
+                    contentDiv.innerHTML += `
+                        <div class="session-header day-${currentDay}">
+                            <h4>${currentSession}</h4>
+                        </div>
+                    `;
+                    
+                    contentDiv.innerHTML += `
+                        <table class="event-table day-${currentDay}">
+                            <thead>
+                                <tr>
+                                    <th>Event #</th>
+                                    <th>Event Name</th>
+                                    <th>Athletes & Heat/Lane Information</th>
+                                    <th>Finishing Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="session-${currentDay}-${currentSession.replace(/\s+/g, '-')}">
+                            </tbody>
+                        </table>
+                    `;
+                }
+                
+                const tbody = document.getElementById(`session-${currentDay}-${currentSession.replace(/\s+/g, '-')}`);
+                const athletes = row.AthleteNames.split(';');
+                const heats = row.Heat.split(';');
+                const lanes = row.Lane.split(';');
+                const seedTimes = row.SeedTime.split(';');
+                
+                let athleteRows = '';
+                athletes.forEach((athlete, index) => {
+                    athleteRows += `
+                        <div class="athlete-row">
+                            <div class="athlete-name">${athlete}</div>
+                            <div class="athlete-details">
+                                <span class="heat-lane-tag">Heat ${heats[index]}</span>
+                                <span class="heat-lane-tag">Lane ${lanes[index]}</span>
+                                <span class="seed-time-tag" id="seed-${athlete.replace(/\s+/g, '-')}">Seed: ${seedTimes[index]}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                const timeInputs = athletes.map((athlete, index) => `
+                    <input type="text" class="time-input" 
+                           data-athlete="${athlete}" 
+                           data-heat="${heats[index]}" 
+                           data-lane="${lanes[index]}" 
+                           data-seed="${seedTimes[index]}">
+                `).join('');
+                
+                tbody.innerHTML += `
+                    <tr class="event-row" data-athletes="${row.AthleteNames.replace(/;/g, ',')}">
+                        <td>${row.Event}</td>
+                        <td>${row.EventName}</td>
+                        <td>${athleteRows}</td>
+                        <td class="athlete-time-input">${timeInputs}</td>
+                    </tr>
+                `;
+            });
+        }
+
         function filterBySwimmer() {
             const searchTerm = document.getElementById('swimmer-filter').value.trim().toLowerCase();
             if (searchTerm === '') {
@@ -702,6 +1109,123 @@
                     element.classList.add('hidden');
                 }
             });
+        }
+        
+        // Helper function to format time difference
+        function formatTimeDifference(finishTime, seedTime) {
+            const diff = compareTime(finishTime, seedTime);
+            
+            // Format the difference as +/- seconds
+            if (diff < 0) {
+                // Improved time (negative difference means faster)
+                return `<span class="improvement">-${Math.abs(diff).toFixed(2)}s</span>`;
+            } else if (diff > 0) {
+                // Slower time
+                return `<span class="slower">+${diff.toFixed(2)}s</span>`;
+            } else {
+                // Same time
+                return `<span class="unchanged">±0.00s</span>`;
+            }
+        }
+
+        // Modified displayResults function to keep original seed times
+        function displayResults() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Swim Meet Results</h2>';
+            const eventRows = document.querySelectorAll('.event-row');
+            let hasResults = false;
+
+            eventRows.forEach(row => {
+                const eventNumber = row.querySelector('td:nth-child(1)').textContent;
+                const eventName = row.querySelector('td:nth-child(2)').textContent;
+                const timeInputs = row.querySelectorAll('.time-input');
+                
+                let hasTime = false;
+                timeInputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        hasTime = true;
+                        // Don't update seed time tags - keep original seed times
+                    }
+                });
+                
+                if (hasTime) {
+                    hasResults = true;
+                    let resultText = `<h3>Event #${eventNumber}: ${eventName}</h3>`;
+                    
+                    let swimmers = [];
+                    timeInputs.forEach(input => {
+                        const athlete = input.getAttribute('data-athlete');
+                        const time = input.value.trim();
+                        const heat = input.getAttribute('data-heat');
+                        const lane = input.getAttribute('data-lane');
+                        const seed = input.getAttribute('data-seed');  // Original seed time
+                        
+                        if (time !== '') {
+                            swimmers.push({
+                                name: athlete,
+                                time: time,
+                                heat: heat,
+                                lane: lane,
+                                seed: seed
+                            });
+                        }
+                    });
+                    
+                    if (swimmers.length > 1 && !swimmers[0].name.includes("Team")) {
+                        swimmers.sort((a, b) => compareTime(a.time, b.time));
+                    }
+                    
+                    swimmers.forEach((swimmer, index) => {
+                        const timeDiff = formatTimeDifference(swimmer.time, swimmer.seed);
+                        
+                        if (!swimmer.name.includes("Team") && swimmers.length > 1) {
+                            resultText += `<p>${index + 1}. ${swimmer.name} (Heat ${swimmer.heat}, Lane ${swimmer.lane}): ${swimmer.time} 
+                                          <small>(Seed: ${swimmer.seed}, Diff: ${timeDiff})</small></p>`;
+                        } else {
+                            resultText += `<p>${swimmer.name} (Heat ${swimmer.heat}, Lane ${swimmer.lane}): ${swimmer.time} 
+                                          <small>(Seed: ${swimmer.seed}, Diff: ${timeDiff})</small></p>`;
+                        }
+                    });
+                    
+                    resultsDiv.innerHTML += resultText;
+                }
+            });
+            
+            if (!hasResults) {
+                resultsDiv.innerHTML += "<p>No results have been entered yet.</p>";
+            }
+        }
+
+        // When the page loads, disable all time inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.time-input').forEach(input => {
+                input.disabled = true;
+            });
+        });
+
+        // Add the clearAllData function
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all swim meet data? This action cannot be undone.")) {
+                // Clear the event content
+                const contentDiv = document.getElementById('eventContent');
+                if (contentDiv) {
+                    contentDiv.innerHTML = '';
+                }
+                
+                // Clear any results
+                document.getElementById('results').innerHTML = '';
+                
+                // Remove any uploaded data from event rows
+                const eventRows = document.querySelectorAll('.event-row');
+                eventRows.forEach(row => {
+                    const timeInputs = row.querySelectorAll('.time-input');
+                    timeInputs.forEach(input => {
+                        input.value = '';
+                    });
+                });
+                
+                showUploadStatus('All data has been cleared successfully', true);
+            }
         }
     </script>
 </body>
