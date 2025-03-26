@@ -5,8 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     searchDiv.className = 'search-container';
     searchDiv.innerHTML = `
         <div class="search-box">
-            <input type="text" id="swimmer-search" placeholder="Search swimmers, events...">
-            <button id="clear-search" class="clear-search-btn">&times;</button>
+            <input type="text" id="swimmer-search" placeholder="Search swimmers...">
         </div>
         <div class="clock" id="real-time-clock"></div>
     `;
@@ -25,69 +24,20 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClock();
     setInterval(updateClock, 1000);
 
-    // Initialize search functionality with expanded search
+    // Initialize search functionality
     const searchInput = document.getElementById('swimmer-search');
-    const clearSearchBtn = document.getElementById('clear-search');
-
-    // Clear search function
-    function clearSearch() {
-        searchInput.value = '';
-        searchInput.dispatchEvent(new Event('input'));
-        searchInput.focus();
-    }
-
-    clearSearchBtn.addEventListener('click', clearSearch);
-
-    // Enhanced search functionality
     searchInput.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('tr');
         
         rows.forEach(row => {
-            // Skip relay swimmer rows
-            if (row.classList.contains('relay-swimmer-row')) {
-                return;
-            }
-
-            let shouldShow = false;
-            const eventNum = row.querySelector('td:nth-child(1)');
-            const eventName = row.querySelector('td:nth-child(2)');
             const athleteName = row.querySelector('td:nth-child(3)');
-            
-            if (eventNum && eventName && athleteName) {
-                const eventNumText = eventNum.textContent.toLowerCase();
-                const eventNameText = eventName.textContent.toLowerCase();
-                const athleteNameText = athleteName.textContent.toLowerCase();
-                const isRelayTeam = athleteNameText.includes('relay team');
-                
-                // Check if we're searching for event number or event name
-                if (searchTerm.match(/^\d+$/) || searchTerm === '') {
-                    // Searching for event number or empty search - show everything
-                    shouldShow = eventNumText.includes(searchTerm) || eventNameText.includes(searchTerm) || athleteNameText.includes(searchTerm);
-                } else if (eventNameText.includes('relay') && searchTerm.includes('relay')) {
-                    // Searching specifically for relay events
-                    shouldShow = eventNameText.includes(searchTerm);
-                } else if (isRelayTeam && !searchTerm.includes('relay')) {
-                    // Exclude relay teams when searching for individual names
-                    shouldShow = false;
+            if (athleteName) {
+                const name = athleteName.textContent.toLowerCase();
+                if (name.includes(searchTerm) || searchTerm === '') {
+                    row.style.display = '';
                 } else {
-                    // Normal search
-                    shouldShow = eventNumText.includes(searchTerm) || 
-                                 eventNameText.includes(searchTerm) || 
-                                 athleteNameText.includes(searchTerm);
-                }
-
-                // Show/hide the main row
-                row.style.display = shouldShow ? '' : 'none';
-
-                // Handle associated relay swimmer rows
-                if (isRelayTeam) {
-                    let nextRow = row.nextElementSibling;
-                    while (nextRow && nextRow.classList.contains('relay-swimmer-row')) {
-                        // Show/hide based on the relay team row's visibility
-                        nextRow.style.display = shouldShow ? '' : 'none';
-                        nextRow = nextRow.nextElementSibling;
-                    }
+                    row.style.display = 'none';
                 }
             }
         });
@@ -134,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: "Shavietaa 5M", heat: "4", lane: "3", seedTime: "56.39" },
                     { name: "Ammara 3M", heat: "6", lane: "9", seedTime: "51.49" }
                 ]},
-                { eventNum: 114, eventName: "Mixed 12U 200 Freestyle relay", athletes: ["Relay: Ayden Koay 4K, Lee Jia Kai 4K, Ainatul Dhamia 5K, Law Yin Er 6B"], heat: "3", lane: "1", seedTime: "NT" }
+                { eventNum: 114, eventName: "Mixed 12U 200 Freestyle relay", athletes: ["Relay: Ayden Koay 4K, Lee Jia Kai 4K, Ainatul Dhamia 5K, Law Yin Er 6B"] }
             ],
             afternoon: [
                 { eventNum: 118, eventName: "Boys 12U 100 Breast", athletes: [
@@ -147,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: "Ainatul Dhamia 5K", heat: "7", lane: "2", seedTime: "1:40.90" },
                     { name: "Ammara 3M", heat: "5", lane: "5", seedTime: "1:55.21" }
                 ]},
-                { eventNum: 128, eventName: "Mixed 12U Medley Relay", athletes: ["Relay: Ayden Koay 4K, Ainatul Dhamia 5K, Law Yin Er 6B, Lee Jia Kai 4K"], heat: "2", lane: "8", seedTime: "NT" }
+                { eventNum: 128, eventName: "Mixed 12U Medley Relay", athletes: ["Relay: Ayden Koay 4K, Ainatul Dhamia 5K, Law Yin Er 6B, Lee Jia Kai 4K"] }
             ]
         },
         day2: {
@@ -197,8 +147,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: "Tan Yun Xin 6K", heat: "4", lane: "9", seedTime: "1:11.18" },
                     { name: "Law Yin Er 6B", heat: "9", lane: "7", seedTime: "44.45" }
                 ]},
-                { eventNum: 234, eventName: "Boys 12U 200 freestyle relay", athletes: ["Relay: Ling Shen Yang 5U, Yeoh Li Ze 4H, Lee Jia Kai 4K, Ayden Koay 4K (Backup: Seoh Yeong Terng 6B)"], heat: "2", lane: "9", seedTime: "NT" },
-                { eventNum: 235, eventName: "Girls 12U 200 freestyle relay", athletes: ["Relay: Ainatul Dhamia 5K, Shavietaa 5M, Ammara 3M, Law Yin Er 6B (Backup: Lim Ginny Sze Han 5M)"], heat: "2", lane: "6", seedTime: "NT" }
+                { eventNum: 234, eventName: "Boys 12U 200 freestyle relay", athletes: ["Relay: Ling Shen Yang 5U, Yeoh Li Ze 4H, Lee Jia Kai 4K, Ayden Koay 4K (Backup: Seoh Yeong Terng 6B)"] },
+                { eventNum: 235, eventName: "Girls 12U 200 freestyle relay", athletes: ["Relay: Ainatul Dhamia 5K, Shavietaa 5M, Ammara 3M, Law Yin Er 6B (Backup: Lim Ginny Sze Han 5M)"] }
             ]
         },
         day3: {
@@ -220,8 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 ]}
             ],
             afternoon: [
-                { eventNum: 324, eventName: "Boys 12U 200 Medley Relay", athletes: ["Relay: Lee Jia Kai 4K, Ling Shen Yang 5U, Ayden Koay 4K, Yeoh Li Ze 4H (Backup: Seoh Yeong Terng 6B)"], heat: "1", lane: "6", seedTime: "NT" },
-                { eventNum: 325, eventName: "Girls 12U 200 Medley Relay", athletes: ["Relay: Ainatul Dhamia 5K, Ammara 3M, Law Yin Er 6B, Shavietaa 5M (Backup: Bong Rui You 4B)"], heat: "2", lane: "6", seedTime: "NT" }
+                { eventNum: 324, eventName: "Boys 12U 200 Medley Relay", athletes: ["Relay: Lee Jia Kai 4K, Ling Shen Yang 5U, Ayden Koay 4K, Yeoh Li Ze 4H (Backup: Seoh Yeong Terng 6B)"] },
+                { eventNum: 325, eventName: "Girls 12U 200 Medley Relay", athletes: ["Relay: Ainatul Dhamia 5K, Ammara 3M, Law Yin Er 6B, Shavietaa 5M (Backup: Bong Rui You 4B)"] }
             ]
         }
     };
@@ -268,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 heatLaneInput.placeholder = 'H/L';
                 heatLaneInput.classList.add('heat-lane-input');
                 heatLaneInput.readOnly = true;
-                heatLaneInput.value = `H${event.heat} L${event.lane}`;
+                heatLaneInput.value = event.athletes[0].heat + '/' + event.athletes[0].lane;
                 heatLaneCell.appendChild(heatLaneInput);
                 
                 // Entry time for the team
@@ -278,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 entryTimeInput.placeholder = 'MM:SS.ms';
                 entryTimeInput.classList.add('entry-time-input');
                 entryTimeInput.readOnly = true;
-                entryTimeInput.value = event.seedTime;
+                entryTimeInput.value = event.athletes[0].seedTime;
                 entryTimeCell.appendChild(entryTimeInput);
                 
                 // Finish time for the team
@@ -287,24 +237,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 finishTimeInput.type = 'text';
                 finishTimeInput.placeholder = 'MM:SS.ms';
                 finishTimeInput.classList.add('finish-time-input');
-                finishTimeInput.value = ''; // Leave finish time blank
+                finishTimeInput.value = event.athletes[0].seedTime;
                 finishTimeCell.appendChild(finishTimeInput);
                 
                 // Actions for the team
                 const actionsCell = document.createElement('td');
-                // Create save button with icon
                 const saveButton = document.createElement('button');
-                saveButton.innerHTML = '<i class="fas fa-save"></i>';
-                saveButton.title = 'Save';
+                saveButton.textContent = 'Save';
                 saveButton.classList.add('btn', 'save-btn');
                 saveButton.addEventListener('click', function() {
                     saveResult(row);
                 });
                 actionsCell.appendChild(saveButton);
-                
-                // Create stopwatch button with icon and move it next to save button
-                const stopwatchButton = createStopwatch(finishTimeInput);
-                actionsCell.appendChild(stopwatchButton);
                 
                 // Append cells to main row
                 row.appendChild(eventNumCell);
@@ -402,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     heatLaneInput.type = 'text';
                     heatLaneInput.placeholder = 'H/L';
                     heatLaneInput.classList.add('heat-lane-input');
-                    heatLaneInput.value = `H${athlete.heat} L${athlete.lane}`;
+                    heatLaneInput.value = `H${athlete.heat}/L${athlete.lane}`;
                     heatLaneInput.readOnly = true;
                     heatLaneCell.appendChild(heatLaneInput);
                     
@@ -420,23 +364,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     finishTimeInput.type = 'text';
                     finishTimeInput.placeholder = 'MM:SS.ms';
                     finishTimeInput.classList.add('finish-time-input');
-                    finishTimeInput.value = ''; // Leave finish time blank
+                    finishTimeInput.value = athlete.seedTime;
                     finishTimeCell.appendChild(finishTimeInput);
                     
                     const actionsCell = document.createElement('td');
-                    // Create save button with icon
                     const saveButton = document.createElement('button');
-                    saveButton.innerHTML = '<i class="fas fa-save"></i>';
-                    saveButton.title = 'Save';
+                    saveButton.textContent = 'Save';
                     saveButton.classList.add('btn', 'save-btn');
                     saveButton.addEventListener('click', function() {
                         saveResult(row);
                     });
                     actionsCell.appendChild(saveButton);
-                    
-                    // Create stopwatch button with icon and add it to actions cell
-                    const stopwatchButton = createStopwatch(finishTimeInput);
-                    actionsCell.appendChild(stopwatchButton);
                     
                     // Append cells to row
                     row.appendChild(eventNumCell);
@@ -472,9 +410,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Calculate time difference and determine color
+        // Calculate time difference
         const timeDiff = calculateTimeDifference(entryTime, finishTime);
-        const isImprovement = timeDiff.startsWith('-');
         
         // Check if result already exists for this athlete and event
         const resultsTable = document.getElementById('results-table');
@@ -500,15 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
             existingRow.querySelector('.heat-lane-cell').textContent = heatLane;
             existingRow.querySelector('.entry-time-cell').textContent = entryTime;
             existingRow.querySelector('.finish-time-cell').textContent = finishTime;
-            
-            const timeDiffCell = existingRow.querySelector('.time-diff-cell');
-            timeDiffCell.textContent = timeDiff;
-            timeDiffCell.className = 'time-diff-cell'; // Reset classes
-            if (isImprovement) {
-                timeDiffCell.classList.add('improvement');
-            } else if (timeDiff !== 'N/A' && timeDiff !== 'Invalid Time' && timeDiff !== 'Error') {
-                timeDiffCell.classList.add('slower');
-            }
+            existingRow.querySelector('.time-diff-cell').textContent = timeDiff;
         } else {
             // Create new row
             const resultRow = document.createElement('tr');
@@ -539,11 +468,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const timeDiffCell = document.createElement('td');
             timeDiffCell.textContent = timeDiff;
             timeDiffCell.classList.add('time-diff-cell');
-            if (isImprovement) {
-                timeDiffCell.classList.add('improvement');
-            } else if (timeDiff !== 'N/A' && timeDiff !== 'Invalid Time' && timeDiff !== 'Error') {
-                timeDiffCell.classList.add('slower');
-            }
             
             resultRow.appendChild(eventNumCell);
             resultRow.appendChild(eventNameCell);
@@ -553,27 +477,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resultRow.appendChild(finishTimeCell);
             resultRow.appendChild(timeDiffCell);
             
-            // Find the correct position to insert the new row based on event number
-            let inserted = false;
-            const rows = resultsTable.querySelectorAll('tr:not(.results-relay-info)');
-            
-            if (rows.length > 0) {
-                for (let i = 0; i < rows.length; i++) {
-                    const currentEventNum = parseInt(rows[i].dataset.eventNum);
-                    const newEventNum = parseInt(eventNum);
-                    
-                    if (newEventNum < currentEventNum) {
-                        rows[i].before(resultRow);
-                        inserted = true;
-                        break;
-                    }
-                }
-            }
-            
-            // If not inserted (new event number is greater than all existing ones), append to the end
-            if (!inserted) {
-                resultsTable.appendChild(resultRow);
-            }
+            resultsTable.appendChild(resultRow);
         }
         
         // For relay events, add swimmer information below the main result
@@ -590,228 +494,62 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Find where to insert swimmer rows in results table
-            const mainResultRow = existingRow || Array.from(resultsTable.querySelectorAll('tr')).find(r => r.dataset.eventNum === eventNum && r.dataset.athlete === athlete);
+            const mainResultRow = existingRow || resultsTable.lastElementChild;
             
             // Add the swimmers
-            if (mainResultRow) {
-                // Add in reverse order so they appear in the correct sequence
-                for (let i = relevantSwimmers.length - 1; i >= 0; i--) {
-                    const swimmerRow = relevantSwimmers[i];
-                    const infoRow = document.createElement('tr');
-                    infoRow.classList.add('results-relay-info');
-                    infoRow.dataset.relayInfoFor = eventNum;
-                    
-                    const infoCell = document.createElement('td');
-                    infoCell.colSpan = 7;
-                    infoCell.textContent = swimmerRow.textContent.trim();
-                    infoCell.style.paddingLeft = '30px';
-                    infoCell.style.fontSize = '0.9em';
-                    infoCell.style.color = '#555';
-                    infoCell.style.backgroundColor = '#f5f9ff';
-                    infoCell.style.borderBottom = '1px dashed #ddd';
-                    
-                    infoRow.appendChild(infoCell);
-                    
-                    // Insert after the main result row
-                    mainResultRow.insertAdjacentElement('afterend', infoRow);
-                }
-            }
+            relevantSwimmers.forEach(swimmerRow => {
+                const infoRow = document.createElement('tr');
+                infoRow.classList.add('results-relay-info');
+                infoRow.dataset.relayInfoFor = eventNum;
+                
+                const infoCell = document.createElement('td');
+                infoCell.colSpan = 7;
+                infoCell.textContent = swimmerRow.textContent.trim();
+                infoCell.style.paddingLeft = '30px';
+                infoCell.style.fontSize = '0.9em';
+                infoCell.style.color = '#555';
+                infoCell.style.backgroundColor = '#f5f9ff';
+                infoCell.style.borderBottom = '1px dashed #ddd';
+                
+                infoRow.appendChild(infoCell);
+                
+                // Insert after the main result row
+                mainResultRow.insertAdjacentElement('afterend', infoRow);
+            });
         }
-        
-        // Save to localStorage after updating
-        saveResultsToStorage();
         
         alert('Result saved successfully!');
     }
 
-    // Load saved results from storage
-    loadResultsFromStorage();
-
-    // Function to save results to local storage
-    function saveResultsToStorage() {
-        const resultsTable = document.getElementById('results-table');
-        const rows = resultsTable.querySelectorAll('tr');
-        const resultsData = [];
-        
-        // Group regular rows with their related relay info rows
-        let currentMainRow = null;
-        let relayInfoRows = [];
-        
-        rows.forEach(row => {
-            if (row.classList.contains('results-relay-info')) {
-                // This is a relay info row, add to current group
-                relayInfoRows.push({
-                    relayInfoFor: row.dataset.relayInfoFor,
-                    content: row.querySelector('td').textContent
-                });
-            } else {
-                // This is a main result row
-                // First, save the previous group if it exists
-                if (currentMainRow) {
-                    resultsData.push({
-                        mainRow: currentMainRow,
-                        relayInfo: relayInfoRows
-                    });
-                    relayInfoRows = [];
-                }
-                
-                // Start a new group
-                currentMainRow = {
-                    eventNum: row.dataset.eventNum,
-                    athlete: row.dataset.athlete,
-                    eventName: row.querySelector('td:nth-child(2)').textContent,
-                    heatLane: row.querySelector('td:nth-child(4)').textContent,
-                    entryTime: row.querySelector('td:nth-child(5)').textContent,
-                    finishTime: row.querySelector('td:nth-child(6)').textContent,
-                    timeDiff: row.querySelector('td:nth-child(7)').textContent,
-                    isImprovement: row.querySelector('td:nth-child(7)').classList.contains('improvement'),
-                    isSlower: row.querySelector('td:nth-child(7)').classList.contains('slower')
-                };
-            }
-        });
-        
-        // Save the last group if it exists
-        if (currentMainRow) {
-            resultsData.push({
-                mainRow: currentMainRow,
-                relayInfo: relayInfoRows
-            });
-        }
-        
-        // Store in local storage
-        localStorage.setItem('MSSPP2025_Results', JSON.stringify(resultsData));
-    }
-    
-    // Function to load results from local storage
-    function loadResultsFromStorage() {
-        const savedData = localStorage.getItem('MSSPP2025_Results');
-        if (!savedData) return;
-        
-        try {
-            const resultsData = JSON.parse(savedData);
-            const resultsTable = document.getElementById('results-table');
-            
-            // Clear existing results
-            resultsTable.innerHTML = '';
-            
-            // Sort the results by event number
-            resultsData.sort((a, b) => {
-                const eventNumA = parseInt(a.mainRow.eventNum);
-                const eventNumB = parseInt(b.mainRow.eventNum);
-                return eventNumA - eventNumB;
-            });
-            
-            // Recreate rows from saved data
-            resultsData.forEach(group => {
-                const { mainRow, relayInfo } = group;
-                
-                // Create main result row
-                const resultRow = document.createElement('tr');
-                resultRow.dataset.eventNum = mainRow.eventNum;
-                resultRow.dataset.athlete = mainRow.athlete;
-                
-                const eventNumCell = document.createElement('td');
-                eventNumCell.textContent = mainRow.eventNum;
-                
-                const eventNameCell = document.createElement('td');
-                eventNameCell.textContent = mainRow.eventName;
-                
-                const athleteCell = document.createElement('td');
-                athleteCell.textContent = mainRow.athlete;
-                
-                const heatLaneCell = document.createElement('td');
-                heatLaneCell.textContent = mainRow.heatLane;
-                heatLaneCell.classList.add('heat-lane-cell');
-                
-                const entryTimeCell = document.createElement('td');
-                entryTimeCell.textContent = mainRow.entryTime;
-                entryTimeCell.classList.add('entry-time-cell');
-                
-                const finishTimeCell = document.createElement('td');
-                finishTimeCell.textContent = mainRow.finishTime;
-                finishTimeCell.classList.add('finish-time-cell');
-                
-                const timeDiffCell = document.createElement('td');
-                timeDiffCell.textContent = mainRow.timeDiff;
-                timeDiffCell.classList.add('time-diff-cell');
-                if (mainRow.isImprovement) {
-                    timeDiffCell.classList.add('improvement');
-                } else if (mainRow.isSlower) {
-                    timeDiffCell.classList.add('slower');
-                }
-                
-                resultRow.appendChild(eventNumCell);
-                resultRow.appendChild(eventNameCell);
-                resultRow.appendChild(athleteCell);
-                resultRow.appendChild(heatLaneCell);
-                resultRow.appendChild(entryTimeCell);
-                resultRow.appendChild(finishTimeCell);
-                resultRow.appendChild(timeDiffCell);
-                
-                resultsTable.appendChild(resultRow);
-                
-                // Add relay info rows if present
-                relayInfo.forEach(info => {
-                    const infoRow = document.createElement('tr');
-                    infoRow.classList.add('results-relay-info');
-                    infoRow.dataset.relayInfoFor = info.relayInfoFor;
-                    
-                    const infoCell = document.createElement('td');
-                    infoCell.colSpan = 7;
-                    infoCell.textContent = info.content;
-                    infoCell.style.paddingLeft = '30px';
-                    infoCell.style.fontSize = '0.9em';
-                    infoCell.style.color = '#555';
-                    infoCell.style.backgroundColor = '#f5f9ff';
-                    infoCell.style.borderBottom = '1px dashed #ddd';
-                    
-                    infoRow.appendChild(infoCell);
-                    resultsTable.appendChild(infoRow);
-                });
-            });
-        } catch (e) {
-            console.error('Error loading saved results:', e);
-        }
-    }
-
     // Calculate time difference between entry and finish time
     function calculateTimeDifference(entryTime, finishTime) {
-        // Handle empty times
         if (!entryTime || !finishTime) {
             return 'N/A';
         }
         
-        // Handle NT (No Time) entries
-        if (entryTime === 'NT') {
-            return '+0.00';
-        }
-        
-        // Continue with regular time difference calculation for normal entries
         try {
-            // Convert times to seconds
-            const entrySeconds = convertTimeToSeconds(entryTime);
-            const finishSeconds = convertTimeToSeconds(finishTime);
+            const entryTimeInMs = convertTimeToMs(entryTime);
+            const finishTimeInMs = convertTimeToMs(finishTime);
             
-            if (isNaN(entrySeconds) || isNaN(finishSeconds)) {
+            if (isNaN(entryTimeInMs) || isNaN(finishTimeInMs)) {
                 return 'Invalid Time';
             }
             
-            // Calculate difference
-            const diffSeconds = finishSeconds - entrySeconds;
+            const diffMs = finishTimeInMs - entryTimeInMs;
             
-            // Format the difference with sign
-            const sign = diffSeconds < 0 ? '-' : '+';
-            const absDiff = Math.abs(diffSeconds);
-            
-            // Format to show 2 decimal places
-            return `${sign}${absDiff.toFixed(2)}`;
+            // Format the difference
+            if (diffMs < 0) {
+                return '-' + formatTime(Math.abs(diffMs));
+            } else {
+                return '+' + formatTime(diffMs);
+            }
         } catch (e) {
             return 'Error';
         }
     }
 
-    // Convert time string (MM:SS.ms) to seconds
-    function convertTimeToSeconds(timeStr) {
+    // Convert time string (MM:SS.ms) to milliseconds
+    function convertTimeToMs(timeStr) {
         // Check if the time string is empty
         if (!timeStr.trim()) {
             return NaN;
@@ -844,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
             seconds = parseInt(timeStr, 10);
         }
         
-        return (minutes * 60) + seconds + (milliseconds / 1000);
+        return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
     }
 
     // Format milliseconds to MM:SS.ms
@@ -860,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Export results to CSV - update to match the new button style
+    // Export results to CSV
     document.getElementById('export-results').addEventListener('click', function() {
         exportResultsToCSV();
     });
@@ -922,88 +660,4 @@ document.addEventListener('DOMContentLoaded', function() {
         link.click();
         document.body.removeChild(link);
     }
-
-    // Add stopwatch functionality 
-    function createStopwatch(finishTimeInput) {
-        let startTime;
-        let timerInterval;
-        let isRunning = false;
-        
-        const stopwatchButton = document.createElement('button');
-        stopwatchButton.innerHTML = '<i class="fas fa-stopwatch"></i>';
-        stopwatchButton.title = 'Start Timing';
-        stopwatchButton.classList.add('btn', 'stopwatch-btn');
-        
-        stopwatchButton.addEventListener('click', function() {
-            if (!isRunning) {
-                // Start the stopwatch
-                startTime = Date.now();
-                isRunning = true;
-                stopwatchButton.classList.add('running');
-                stopwatchButton.title = 'Stop Timing';
-                
-                // Update the display every 10ms
-                timerInterval = setInterval(function() {
-                    const elapsedMs = Date.now() - startTime;
-                    const formattedTime = formatStopwatchTime(elapsedMs);
-                    finishTimeInput.value = formattedTime;
-                }, 10);
-            } else {
-                // Stop the stopwatch
-                clearInterval(timerInterval);
-                isRunning = false;
-                stopwatchButton.classList.remove('running');
-                stopwatchButton.title = 'Start Timing';
-                
-                // Auto-save the result
-                const row = findParentRow(stopwatchButton);
-                if (row) {
-                    saveResult(row);
-                }
-            }
-        });
-        
-        return stopwatchButton;
-    }
-
-    // Helper function to find the parent row of an element
-    function findParentRow(element) {
-        let current = element;
-        while (current && current.tagName !== 'TR') {
-            current = current.parentElement;
-        }
-        return current;
-    }
-
-    function formatStopwatchTime(ms) {
-        const minutes = Math.floor(ms / 60000);
-        const seconds = Math.floor((ms % 60000) / 1000);
-        const milliseconds = Math.floor((ms % 1000) / 10);
-        
-        if (minutes > 0) {
-            return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
-        } else {
-            return `${seconds}.${milliseconds.toString().padStart(2, '0')}`;
-        }
-    }
-
-    // Return to top button functionality
-    const returnToTopBtn = document.getElementById('return-to-top');
-    
-    // Show button when user scrolls down 300px
-    window.addEventListener('scroll', function() {
-        if (window.pageYOffset > 300) {
-            returnToTopBtn.classList.add('visible');
-        } else {
-            returnToTopBtn.classList.remove('visible');
-        }
-    });
-    
-    // Scroll to top when button is clicked
-    returnToTopBtn.addEventListener('click', function() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
 }); 

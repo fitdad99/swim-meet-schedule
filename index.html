@@ -5,28 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MSSPP 2025 - Keong Hoe Swim Team</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Add FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container">
             <h1>Keong Hoe Swim Team 2025</h1>
             <h2>MSSPP 2025 - April 7-9, 2025</h2>
-        </div>
+    </div>
     </header>
 
-    <nav class="tab-navigation">
-        <button class="tab-btn active" data-tab="day1">Day 1 (Apr 7)</button>
-        <button class="tab-btn" data-tab="day2">Day 2 (Apr 8)</button>
-        <button class="tab-btn" data-tab="day3">Day 3 (Apr 9)</button>
-        <button class="tab-btn" data-tab="results">Results</button>
-    </nav>
-
     <main class="container">
-        <!-- Remove any duplicated tab navigation here -->
-        
-        <!-- Day 1 Content -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="day1">Day 1 (April 7)</button>
+            <button class="tab-btn" data-tab="day2">Day 2 (April 8)</button>
+            <button class="tab-btn" data-tab="day3">Day 3 (April 9)</button>
+            <button class="tab-btn" data-tab="results">Results</button>
+    </div>
+
         <div id="day1" class="tab-content active">
             <div class="session">
                 <h3>Morning Session (8:00 AM)</h3>
@@ -34,7 +29,7 @@
                     <table class="event-table">
                         <thead>
                             <tr>
-                                <th>Evt #</th>
+                                <th>Event #</th>
                                 <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -56,7 +51,7 @@
                     <table class="event-table">
             <thead>
                 <tr>
-                                <th>Evt #</th>
+                                <th>Event #</th>
                                 <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -80,7 +75,7 @@
                     <table class="event-table">
                         <thead>
                             <tr>
-                                <th>Evt #</th>
+                                <th>Event #</th>
                                 <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -102,7 +97,7 @@
                     <table class="event-table">
                         <thead>
                             <tr>
-                                <th>Evt #</th>
+                                <th>Event #</th>
                                 <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -126,7 +121,7 @@
                     <table class="event-table">
                             <thead>
                                 <tr>
-                                    <th>Evt #</th>
+                                    <th>Event #</th>
                                     <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -148,7 +143,7 @@
                     <table class="event-table">
                             <thead>
                                 <tr>
-                                    <th>Evt #</th>
+                                    <th>Event #</th>
                                     <th>Event Name</th>
                                 <th>Athlete Name</th>
                                 <th>Heat/Lane</th>
@@ -168,15 +163,13 @@
         <div id="results" class="tab-content">
             <h3>Swim Results</h3>
             <div class="results-controls">
-                <button id="export-results" class="btn export-btn" title="Export Results to CSV">
-                    <i class="fas fa-file-export"></i>
-                </button>
+                <button id="export-results" class="btn">Export Results to CSV</button>
                         </div>
             <div class="event-table-container">
                 <table class="event-table">
                             <thead>
                                 <tr>
-                            <th>Evt #</th>
+                                    <th>Event #</th>
                                     <th>Event Name</th>
                             <th>Athlete Name</th>
                             <th>Heat/Lane</th>
@@ -198,11 +191,6 @@
             <p>&copy; 2025 Koay Ween Ching. All rights reserved.</p>
                     </div>
     </footer>
-
-    <!-- Add return to top button -->
-    <div class="return-to-top" id="return-to-top">
-        <i class="fas fa-arrow-up"></i>
-    </div>
 
     <script src="script.js"></script>
 </body>
