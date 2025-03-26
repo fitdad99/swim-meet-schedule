@@ -13,17 +13,20 @@
         <div class="container">
             <h1>Keong Hoe Swim Team 2025</h1>
             <h2>MSSPP 2025 - April 7-9, 2025</h2>
-    </div>
+        </div>
     </header>
 
-    <main class="container">
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="day1">Day 1 (April 7)</button>
-            <button class="tab-btn" data-tab="day2">Day 2 (April 8)</button>
-            <button class="tab-btn" data-tab="day3">Day 3 (April 9)</button>
-            <button class="tab-btn" data-tab="results">Results</button>
-    </div>
+    <nav class="tab-navigation">
+        <button class="tab-btn active" data-tab="day1">Day 1 (Apr 7)</button>
+        <button class="tab-btn" data-tab="day2">Day 2 (Apr 8)</button>
+        <button class="tab-btn" data-tab="day3">Day 3 (Apr 9)</button>
+        <button class="tab-btn" data-tab="results">Results</button>
+    </nav>
 
+    <main class="container">
+        <!-- Remove any duplicated tab navigation here -->
+        
+        <!-- Day 1 Content -->
         <div id="day1" class="tab-content active">
             <div class="session">
                 <h3>Morning Session (8:00 AM)</h3>
@@ -168,26 +171,26 @@
                 <button id="export-results" class="btn export-btn" title="Export Results to CSV">
                     <i class="fas fa-file-export"></i>
                 </button>
-            </div>
+                        </div>
             <div class="event-table-container">
                 <table class="event-table">
-                    <thead>
-                        <tr>
+                            <thead>
+                                <tr>
                             <th>Evt #</th>
-                            <th>Event Name</th>
+                                    <th>Event Name</th>
                             <th>Athlete Name</th>
                             <th>Heat/Lane</th>
                             <th>Entry Time</th>
-                            <th>Finishing Time</th>
+                                    <th>Finishing Time</th>
                             <th>Time Difference</th>
-                        </tr>
-                    </thead>
+                                </tr>
+                            </thead>
                     <tbody id="results-table">
                         <!-- Results will be populated via JavaScript -->
-                    </tbody>
+                            </tbody>
                 </table>
-            </div>
-        </div>
+                    </div>
+                    </div>
     </main>
 
     <footer>
@@ -195,6 +198,11 @@
             <p>&copy; 2025 Koay Ween Ching. All rights reserved.</p>
                     </div>
     </footer>
+
+    <!-- Add return to top button -->
+    <div class="return-to-top" id="return-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
 
     <script src="script.js"></script>
 </body>

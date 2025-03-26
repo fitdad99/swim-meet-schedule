@@ -21,9 +21,12 @@ body {
 
 /* Header Styles */
 header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     background-color: #005792;
     color: white;
-    padding: 20px 0;
+    padding: 20px 0 0;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -40,34 +43,39 @@ header h2 {
 
 /* Main Content Styles */
 main {
-    padding: 30px 0;
+    padding-top: 10px;
 }
 
-/* Tab Navigation */
-.tabs {
+/* Tab Navigation - Fixed */
+.tab-navigation {
+    position: sticky;
+    top: 80px; /* Adjust based on header height */
+    z-index: 90;
+    background-color: #fff;
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
     margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
 }
 
 .tab-btn {
-    background: #eaeaea;
+    background-color: #f5f5f5;
     border: none;
     padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 4px;
     cursor: pointer;
-    margin-right: 5px;
-    font-size: 16px;
-    border-radius: 5px 5px 0 0;
+    font-weight: 600;
     transition: background-color 0.3s;
 }
 
 .tab-btn:hover {
-    background: #ddd;
+    background-color: #e0e0e0;
 }
 
 .tab-btn.active {
-    background: #005792;
+    background-color: #005792;
     color: white;
 }
 
@@ -356,7 +364,7 @@ footer {
     .heat-lane-input,
     .entry-time-input,
     .finish-time-input {
-        width: 80px;
+        width: 100px;
     }
     
     table td {
@@ -367,7 +375,7 @@ footer {
     table td:nth-child(4),
     table th:nth-child(4) {
         display: table-cell !important;
-        min-width: 80px;
+        min-width: 100px;
     }
 }
 
@@ -628,4 +636,59 @@ table {
         width: 30px;
         height: 30px;
     }
+}
+
+/* Fixed header styles */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #005792;
+    color: white;
+    padding: 20px 0 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navigation {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background-color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Return to top button */
+.return-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #0275d8;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+.return-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.return-to-top:hover {
+    background-color: #0267bf;
+}
+
+.return-to-top i {
+    font-size: 20px;
 } 

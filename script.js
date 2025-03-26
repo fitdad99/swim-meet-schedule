@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const rows = document.querySelectorAll('tr');
         
         rows.forEach(row => {
+            // Skip relay swimmer rows
             if (row.classList.contains('relay-swimmer-row')) {
-                // Don't directly hide/show relay swimmer rows - they will be handled by their parent row
                 return;
             }
 
@@ -58,28 +58,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 const eventNumText = eventNum.textContent.toLowerCase();
                 const eventNameText = eventName.textContent.toLowerCase();
                 const athleteNameText = athleteName.textContent.toLowerCase();
+                const isRelayTeam = athleteNameText.includes('relay team');
                 
-                shouldShow = eventNumText.includes(searchTerm) || 
-                            eventNameText.includes(searchTerm) || 
-                            athleteNameText.includes(searchTerm);
+                // Check if we're searching for event number or event name
+                if (searchTerm.match(/^\d+$/) || searchTerm === '') {
+                    // Searching for event number or empty search - show everything
+                    shouldShow = eventNumText.includes(searchTerm) || eventNameText.includes(searchTerm) || athleteNameText.includes(searchTerm);
+                } else if (eventNameText.includes('relay') && searchTerm.includes('relay')) {
+                    // Searching specifically for relay events
+                    shouldShow = eventNameText.includes(searchTerm);
+                } else if (isRelayTeam && !searchTerm.includes('relay')) {
+                    // Exclude relay teams when searching for individual names
+                    shouldShow = false;
+                } else {
+                    // Normal search
+                    shouldShow = eventNumText.includes(searchTerm) || 
+                                 eventNameText.includes(searchTerm) || 
+                                 athleteNameText.includes(searchTerm);
+                }
 
                 // Show/hide the main row
                 row.style.display = shouldShow ? '' : 'none';
 
                 // Handle associated relay swimmer rows
-                if (athleteNameText.includes('relay team')) {
+                if (isRelayTeam) {
                     let nextRow = row.nextElementSibling;
                     while (nextRow && nextRow.classList.contains('relay-swimmer-row')) {
-                        // If searching and this swimmer matches, show both the relay team row and this swimmer row
-                        const swimmerText = nextRow.textContent.toLowerCase();
-                        if (searchTerm && swimmerText.includes(searchTerm)) {
-                            row.style.display = '';
-                            nextRow.style.display = '';
-                            shouldShow = true;
-                        } else {
-                            // Show/hide based on the relay team row's visibility
-                            nextRow.style.display = shouldShow ? '' : 'none';
-                        }
+                        // Show/hide based on the relay team row's visibility
+                        nextRow.style.display = shouldShow ? '' : 'none';
                         nextRow = nextRow.nextElementSibling;
                     }
                 }
@@ -547,7 +553,27 @@ document.addEventListener('DOMContentLoaded', function() {
             resultRow.appendChild(finishTimeCell);
             resultRow.appendChild(timeDiffCell);
             
-            resultsTable.appendChild(resultRow);
+            // Find the correct position to insert the new row based on event number
+            let inserted = false;
+            const rows = resultsTable.querySelectorAll('tr:not(.results-relay-info)');
+            
+            if (rows.length > 0) {
+                for (let i = 0; i < rows.length; i++) {
+                    const currentEventNum = parseInt(rows[i].dataset.eventNum);
+                    const newEventNum = parseInt(eventNum);
+                    
+                    if (newEventNum < currentEventNum) {
+                        rows[i].before(resultRow);
+                        inserted = true;
+                        break;
+                    }
+                }
+            }
+            
+            // If not inserted (new event number is greater than all existing ones), append to the end
+            if (!inserted) {
+                resultsTable.appendChild(resultRow);
+            }
         }
         
         // For relay events, add swimmer information below the main result
@@ -564,28 +590,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Find where to insert swimmer rows in results table
-            const mainResultRow = existingRow || resultsTable.lastElementChild;
+            const mainResultRow = existingRow || Array.from(resultsTable.querySelectorAll('tr')).find(r => r.dataset.eventNum === eventNum && r.dataset.athlete === athlete);
             
             // Add the swimmers
-            relevantSwimmers.forEach(swimmerRow => {
-                const infoRow = document.createElement('tr');
-                infoRow.classList.add('results-relay-info');
-                infoRow.dataset.relayInfoFor = eventNum;
-                
-                const infoCell = document.createElement('td');
-                infoCell.colSpan = 7;
-                infoCell.textContent = swimmerRow.textContent.trim();
-                infoCell.style.paddingLeft = '30px';
-                infoCell.style.fontSize = '0.9em';
-                infoCell.style.color = '#555';
-                infoCell.style.backgroundColor = '#f5f9ff';
-                infoCell.style.borderBottom = '1px dashed #ddd';
-                
-                infoRow.appendChild(infoCell);
-                
-                // Insert after the main result row
-                mainResultRow.insertAdjacentElement('afterend', infoRow);
-            });
+            if (mainResultRow) {
+                // Add in reverse order so they appear in the correct sequence
+                for (let i = relevantSwimmers.length - 1; i >= 0; i--) {
+                    const swimmerRow = relevantSwimmers[i];
+                    const infoRow = document.createElement('tr');
+                    infoRow.classList.add('results-relay-info');
+                    infoRow.dataset.relayInfoFor = eventNum;
+                    
+                    const infoCell = document.createElement('td');
+                    infoCell.colSpan = 7;
+                    infoCell.textContent = swimmerRow.textContent.trim();
+                    infoCell.style.paddingLeft = '30px';
+                    infoCell.style.fontSize = '0.9em';
+                    infoCell.style.color = '#555';
+                    infoCell.style.backgroundColor = '#f5f9ff';
+                    infoCell.style.borderBottom = '1px dashed #ddd';
+                    
+                    infoRow.appendChild(infoCell);
+                    
+                    // Insert after the main result row
+                    mainResultRow.insertAdjacentElement('afterend', infoRow);
+                }
+            }
         }
         
         // Save to localStorage after updating
@@ -664,6 +694,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Clear existing results
             resultsTable.innerHTML = '';
             
+            // Sort the results by event number
+            resultsData.sort((a, b) => {
+                const eventNumA = parseInt(a.mainRow.eventNum);
+                const eventNumB = parseInt(b.mainRow.eventNum);
+                return eventNumA - eventNumB;
+            });
+            
             // Recreate rows from saved data
             resultsData.forEach(group => {
                 const { mainRow, relayInfo } = group;
@@ -739,33 +776,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Calculate time difference between entry and finish time
     function calculateTimeDifference(entryTime, finishTime) {
+        // Handle empty times
         if (!entryTime || !finishTime) {
             return 'N/A';
         }
         
+        // Handle NT (No Time) entries
+        if (entryTime === 'NT') {
+            return '+0.00';
+        }
+        
+        // Continue with regular time difference calculation for normal entries
         try {
-            const entryTimeInMs = convertTimeToMs(entryTime);
-            const finishTimeInMs = convertTimeToMs(finishTime);
+            // Convert times to seconds
+            const entrySeconds = convertTimeToSeconds(entryTime);
+            const finishSeconds = convertTimeToSeconds(finishTime);
             
-            if (isNaN(entryTimeInMs) || isNaN(finishTimeInMs)) {
+            if (isNaN(entrySeconds) || isNaN(finishSeconds)) {
                 return 'Invalid Time';
             }
             
-            const diffMs = finishTimeInMs - entryTimeInMs;
+            // Calculate difference
+            const diffSeconds = finishSeconds - entrySeconds;
             
-            // Format the difference
-            if (diffMs < 0) {
-                return '-' + formatTime(Math.abs(diffMs));
-            } else {
-                return '+' + formatTime(diffMs);
-            }
+            // Format the difference with sign
+            const sign = diffSeconds < 0 ? '-' : '+';
+            const absDiff = Math.abs(diffSeconds);
+            
+            // Format to show 2 decimal places
+            return `${sign}${absDiff.toFixed(2)}`;
         } catch (e) {
             return 'Error';
         }
     }
 
-    // Convert time string (MM:SS.ms) to milliseconds
-    function convertTimeToMs(timeStr) {
+    // Convert time string (MM:SS.ms) to seconds
+    function convertTimeToSeconds(timeStr) {
         // Check if the time string is empty
         if (!timeStr.trim()) {
             return NaN;
@@ -798,7 +844,7 @@ document.addEventListener('DOMContentLoaded', function() {
             seconds = parseInt(timeStr, 10);
         }
         
-        return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
+        return (minutes * 60) + seconds + (milliseconds / 1000);
     }
 
     // Format milliseconds to MM:SS.ms
@@ -908,10 +954,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 isRunning = false;
                 stopwatchButton.classList.remove('running');
                 stopwatchButton.title = 'Start Timing';
+                
+                // Auto-save the result
+                const row = findParentRow(stopwatchButton);
+                if (row) {
+                    saveResult(row);
+                }
             }
         });
         
         return stopwatchButton;
+    }
+
+    // Helper function to find the parent row of an element
+    function findParentRow(element) {
+        let current = element;
+        while (current && current.tagName !== 'TR') {
+            current = current.parentElement;
+        }
+        return current;
     }
 
     function formatStopwatchTime(ms) {
@@ -925,4 +986,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return `${seconds}.${milliseconds.toString().padStart(2, '0')}`;
         }
     }
+
+    // Return to top button functionality
+    const returnToTopBtn = document.getElementById('return-to-top');
+    
+    // Show button when user scrolls down 300px
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            returnToTopBtn.classList.add('visible');
+        } else {
+            returnToTopBtn.classList.remove('visible');
+        }
+    });
+    
+    // Scroll to top when button is clicked
+    returnToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
 }); 
