@@ -411,7 +411,7 @@ table {
     .heat-lane-input,
     .entry-time-input,
     .finish-time-input {
-        width: 70px;
+        width: 100px;
         font-size: 12px;
     }
     
@@ -551,7 +551,7 @@ table {
 
 .heat-lane-input {
     text-align: center;
-    width: 70px !important;
+    width: 100px !important;
 }
 
 /* Action buttons alignment */
@@ -594,7 +594,7 @@ table {
     }
     
     .heat-lane-input {
-        width: 50px !important;
+        width: 100px !important;
     }
     
     /* Make entry time visible on mobile */
@@ -621,7 +621,7 @@ table {
     }
     
     .heat-lane-input {
-        width: 45px !important;
+        width: 100px !important;
     }
     
     .btn {
