@@ -199,11 +199,13 @@ document.addEventListener('DOMContentLoaded', function() {
             morning: [
                 { eventNum: 306, eventName: "Boys 12U 50 freestyle", athletes: [
                     { name: "Ayden Koay 4K", heat: "17", lane: "7", seedTime: "40.20" },
-                    { name: "Lee Jia Kai 4K", heat: "15", lane: "8", seedTime: "45.81" }
+                    { name: "Lee Jia Kai 4K", heat: "15", lane: "8", seedTime: "45.81" },
+                    { name: "Yeoh Li Ze 4H", heat: "13", lane: "7", seedTime: "48.89" }
                 ]},
                 { eventNum: 307, eventName: "Girls 12U 50 freestyle", athletes: [
                     { name: "Shavietaa 5M", heat: "13", lane: "9", seedTime: "44.16" },
-                    { name: "Bong Rui You 4B", heat: "11", lane: "7", seedTime: "48.87" }
+                    { name: "Bong Rui You 4B", heat: "11", lane: "7", seedTime: "48.87" },
+                    { name: "Ainatul Dhamia 5K", heat: "15", lane: "8", seedTime: "38.74" }
                 ]},
                 { eventNum: 312, eventName: "Boys 12U 100 backstroke", athletes: [
                     { name: "Lee Jia Kai 4K", heat: "2", lane: "6", seedTime: "1:50.47" }
