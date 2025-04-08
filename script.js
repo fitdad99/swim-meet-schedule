@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: "Tan Yun Xin 6K", heat: "4", lane: "9", seedTime: "1:11.18" },
                     { name: "Law Yin Er 6B", heat: "9", lane: "7", seedTime: "44.45" }
                 ]},
-                { eventNum: 234, eventName: "Boys 12U 200 freestyle relay", athletes: ["Relay: Ling Shen Yang 5U, Yeoh Li Ze 4H, Lee Jia Kai 4K, Ayden Koay 4K (Backup: Seoh Yeong Terng 6B)"], heat: "2", lane: "9", seedTime: "NT" },
+                { eventNum: 234, eventName: "Boys 12U 200 freestyle relay", athletes: ["Relay: Ling Shen Yang 5U, Yeoh Li Ze 4H, Lee Jia Kai 4K, Ayden Koay 4K (Backup: Seoh Yeong Terng 6B)"], heat: "1", lane: "9", seedTime: "NT" },
                 { eventNum: 235, eventName: "Girls 12U 200 freestyle relay", athletes: ["Relay: Ainatul Dhamia 5K, Shavietaa 5M, Ammara 3M, Law Yin Er 6B (Backup: Lim Ginny Sze Han 5M)"], heat: "2", lane: "6", seedTime: "NT" }
             ]
         },
